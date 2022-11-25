@@ -290,7 +290,7 @@ footer {
 } 
 
 
-@media screen and (min-width:361px) and (max-width:600px) {
+@media screen and (min-width:350px) and (max-width:600px) {
 
   .navigation-bar {
     width: 100%;
@@ -303,8 +303,11 @@ footer {
 
   #search-bar {
     display: flex;
-    width: 50%;
-    margin: 10px 10px 5px 10px;
+    width: 285px;
+  }
+
+  #search-bar > input{
+    width: 225px;
   }
 
   .category-container {
