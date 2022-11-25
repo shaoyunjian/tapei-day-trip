@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css')}}">
+  <title>台北一日遊</title>
+</head>
+
+<body>
+  <header>
+    <div class="navigation-bar">
+      <div class="title">台北一日遊</div>
+      <div class="nav">
+        <a href="">預定行程</a>
+        <a href="">登入/註冊</a>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="banner">
+      <div>
+        <div class="banner-description-1">輕鬆享受台北一日悠閒</div>
+        <div class="banner-description-2">探索每個角落，體驗城市的深度旅遊行程</div>
+        <form action="/" autocomplete="off">
+          <div id="search-bar">
+              <input type="text" placeholder="輸入景點名稱查詢" id="keyword-input">
+              <button id="search-btn"></button>
+          </div>
+        </form>
+        <div class="category-container search-mode">
+          <!-- 
+          <div class="category">公共藝術</div>
+          <div class="category">宗教信仰</div>
+          <div class="category">歷史建築</div>
+          <div class="category">藝文館所</div>
+          <div class="category">養生溫泉</div>
+          <div class="category">養生溫泉</div>
+          <div class="category">養生溫泉</div>
+          <div class="category">其　　它</div> 
+          -->
+        </div>
+      </div>
+      <img src="../static/images/welcome.png" alt="welcome-img">
+    </div>
+
+    <div class="attraction-area">
+      <!-- 
+      <div class="attraction">
+        <img src="../static/images/Picture.png" alt="" class="attraction-img">
+        <div class="attraction-name">平安鐘</div>
+        <div class="attraction-info">
+          <div class="transportation">忠孝復興</div>
+          <div>公共藝術</div>
+        </div>
+      </div>
+      -->
+    </div>
+  </main>
+  <footer>COPYRIGHT © 2022 台北一日遊</footer>
+  <script src="{{ url_for('static', filename='javascript/index.js')}}"></script>
+</body>
+
+</html>

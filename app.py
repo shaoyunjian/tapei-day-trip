@@ -56,7 +56,6 @@ def api_attractions():
 			values = (keyword, "%"+keyword+"%", page_size, page * page_size)
 			cursor.execute(sql, values)
 			database = cursor.fetchall()
-			print(database)
 			values_next_page = (keyword, "%"+keyword+"%", page_size, (page + 1) * page_size)
 			cursor.execute(sql, values_next_page)
 			database_next_page = cursor.fetchall()
@@ -119,7 +118,6 @@ def api_attraction_id(attractionId):
 		cursor.execute(sql, values)
 		database = cursor.fetchone()
 		if database:
-			print(database)
 			database = list(database)
 			attraction_info = {
 			"id": database[0],
