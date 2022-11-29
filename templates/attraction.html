@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/attraction.css')}}">
+  <title>台北一日遊</title>
+</head>
+
+<body>
+  <header>
+    <div class="navigation-bar">
+      <a href="/" class="title">台北一日遊</a>
+      <div class="nav">
+        <a href="">預定行程</a>
+        <a href="">登入/註冊</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-container">
+      
+      <!-- slide & booking-area -->
+      <div class="slide-and-booking-area">
+
+        <!-- slideshow -->
+        <div class="slideshow-container">
+          <img src="../static/images/Picture.png" alt="attraction-images" class="slide-images">
+          <div class="left-arrow"></div>
+          <div class="right-arrow"></div>
+          <div class="dots">
+            <!-- <span class="dot active"></span> -->
+          </div>
+        </div>
+
+        <!-- booking -area -->
+        <div class="booking-area">
+          <div class="attraction-name">平安鐘</div>
+          <div class="category-mrt">公共藝術 at 忠孝復興</div>
+          <!-- booking -->
+          <form action="" class="booking">
+            <div><b>訂購導覽行程</b></div>
+            <div>以此景點為中心的一日行程，帶您探索城市角落故事</div>
+            <div><b>選擇日期： </b><input type="date" value="yyyy-mm-dd"></div>
+            <div><b>選擇時間：</b>
+              <label class="radio-container">
+                <input type="radio" id="itinerary-morning" name="itinerary" checked>
+                <span class="new-radio-btn"></span>
+                上半天
+              </label>
+              <label class="radio-container itinerary-afternoon">
+                <input type="radio" id="itinerary-afternoon" name="itinerary">
+                <span class="new-radio-btn"></span>
+                下半天
+              </label>
+            </div>
+            <div><b>導覽費用：</b><span class="price">新台幣 2000 元</span></div>
+            <button id="booking-btn">開始預約行程</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="attraction-intro-container">
+        <div class="attraction-intro">
+         <!-- attraction introduction display -->
+      </div>
+      <div class="address-info">
+        <div class="address-title"><b>景點地址：</b></div>
+        <div class="address-detail">臺北市 大安區忠孝東路4段</div>
+      </div>
+      <div class="transportation-info">
+        <div class="transportation-title"><b>交通方式：</b></div>
+        <div class="transportation-detail">
+          <!-- transportation detail display -->
+        </div>
+      </div>
+      </div>  
+    </div>
+  </main>
+
+  <footer>COPYRIGHT © 2022 台北一日遊</footer>
+  <script src="{{ url_for('static', filename='javascript/attraction.js')}}"></script>
+</body>
+</html>
