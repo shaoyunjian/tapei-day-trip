@@ -1,9 +1,9 @@
 "use strict"
-let initialPage = 0
-let initialKeyword = ""
+const initialPage = 0
+const initialKeyword = ""
+const attractionArea = document.querySelector(".attraction-area")
 let loadAmount = 0
 let nextPageArray = []
-let attractionArea = document.querySelector(".attraction-area")
 let isLoading = false
 
 window.addEventListener("DOMContentLoaded", initialLoad(initialPage, initialKeyword))
@@ -15,8 +15,8 @@ function initialLoad(page, keyword){
     .then(response => {return response.json()})
     .then(data => {
       nextPageArray = []
-      let nextPage = data["nextPage"]
-      let dataLength = getAttractions(data)[1]
+      const nextPage = data["nextPage"]
+      const dataLength = getAttractions(data)[1]
 
       if(dataLength === 0){
         attractionArea.innerHTML = "沒有相關搜尋結果"
@@ -73,38 +73,40 @@ function fetchAPI(page, keyword){
 
 // Get attractions
 function getAttractions(data){
-  let nextPage = data["nextPage"]
-  let dataLength = data["data"].length
+  const nextPage = data["nextPage"]
+  const dataLength = data["data"].length
   for (let i =0; i < data["data"].length; i++){
-    let imgURL = data["data"][i]["images"][0]
-    let name = data["data"][i]["name"]
-    let mrt = data["data"][i]["mrt"]
-    let category = data["data"][i]["category"]
+    const attractionID = data["data"][i]["id"]
+    const imgURL = data["data"][i]["images"][0]
+    const name = data["data"][i]["name"]
+    const mrt = data["data"][i]["mrt"]
+    const category = data["data"][i]["category"]
 
-    let attraction = document.createElement("div")
+    const attraction = document.createElement("a")
+    attraction.setAttribute("href", `/attraction/${attractionID}`)
     attraction.classList.add("attraction")
     attractionArea.appendChild(attraction)
 
-    let image = document.createElement("img")
+    const image = document.createElement("img")
     image.src = imgURL
     image.classList.add("attraction-img")
     attraction.appendChild(image)
 
-    let attractionName = document.createElement("div")
+    const attractionName = document.createElement("div")
     attractionName.classList.add("attraction-name")
     attractionName.textContent = name
     attraction.appendChild(attractionName)
 
-    let attractionInfo = document.createElement("div")
+    const attractionInfo = document.createElement("div")
     attractionInfo.classList.add("attraction-info")
     attraction.appendChild(attractionInfo)
 
-    let transportation = document.createElement("div")
+    const transportation = document.createElement("div")
     transportation.classList.add("info-transportation")
     transportation.textContent = mrt
     attractionInfo.appendChild(transportation)
 
-    let infoCategory = document.createElement("div")
+    const infoCategory = document.createElement("div")
     infoCategory.classList.add("info-category")
     infoCategory.textContent = category
     attractionInfo.appendChild(infoCategory)
@@ -119,7 +121,7 @@ const searchBtn = document.querySelector("#search-btn")
 
 searchBtn.addEventListener("click", event => {
   event.preventDefault() 
-  let inputValue = keywordInput.value
+  const inputValue = keywordInput.value
   attractionArea.innerHTML = ""
   loadAmount = 0
   initialLoad(initialPage, inputValue)
@@ -133,7 +135,7 @@ fetch("/api/categories")
 .then(response => {return response.json()})
 .then(data => {
   for(let i = 0; i< data["data"].length; i++){
-    let category = document.createElement("div")
+    const category = document.createElement("div")
     category.classList.add("category")
     category.textContent = data["data"][i]
     category.setAttribute("data-id", `${i}`)
@@ -141,7 +143,7 @@ fetch("/api/categories")
   }
   
   categoryContainer.addEventListener("click", (event)=>{
-    let categoryID = Number(event.target.dataset.id)
+    const categoryID = Number(event.target.dataset.id)
     if(event.target.dataset.id){
     keywordInput.value = data["data"][categoryID]}
   })
