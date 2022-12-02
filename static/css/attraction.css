@@ -1,65 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Noto Sans TC', sans-serif;
-}
-
-/* header */
-
-header {
-  width: 100%;
-  height: 54px;
-  display: flex;
-  position: fixed;
-  top: 0;
-  background-color: #FFFFFF;
-  border-bottom: 1px solid #E8E8E8;
-  z-index: 2;
-}
-
-/* navigation-bar */
-
-.navigation-bar {
-  width: 1200px;
-  display: flex;
-  margin: auto;
-  padding: 10px 0;
-}
-
-.title {
-  color: #448899;
-  font-weight: 700;
-  font-size: 30px;
-  line-height: 34px;
-}
-
-a {
-  text-decoration: none;
-}
-
-.nav {
-  color: #666666;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 13.3px;
-
-  display: flex;
-  margin-left: auto;
-  align-items: center;
-}
-
-.nav > a {
-  margin: 10px;
-  text-decoration: none;
-  color: #666666;
-}
-
-/* 以上、index.cssとは一緒 */
-
 .main-container{
   width: 1200px;
   height: auto;
@@ -84,7 +22,7 @@ a {
   position: relative;
 }
 
-.slideshow-container > img {
+.slide-images {
   width: 540px;
   height: 406px;
   object-fit: cover;
@@ -132,8 +70,9 @@ a {
   
 }
 
-/* .dot:hover, */
+.dot:hover,
 .dot.active {
+  cursor: pointer;
   background-color: #000000;
   border: 1px solid #FFFFFF;
   width: 12px;
@@ -289,8 +228,12 @@ footer {
     margin: 0 15px;
   }
 
-  .slideshow-container > img {
+  .slide-images {
     width: 100%;
+  }
+
+  .dots {
+    bottom: 25px;
   }
 
   .booking-area {
@@ -319,11 +262,6 @@ footer {
 
 @media screen and (max-width:600px) {
 
-  .navigation-bar {
-    width: 100%;
-    padding: 10px 0 10px 10px;
-  }
-
   .main-container{
     width: 100%;
     height: auto;
@@ -346,7 +284,7 @@ footer {
     margin: 0 auto;
   }
 
-  .slideshow-container>img {
+  .slide-images {
     width: 100%;
     height: 350px;
     object-fit: cover;
@@ -368,11 +306,4 @@ footer {
     padding: 0 10px 0 20px;
   }
 
-  .attraction-intro,
-  .address-info,
-  .transportation-info {
-    margin-bottom: 15px;
-    line-height: 30px;
-    width: 100%;
-  }
 }
