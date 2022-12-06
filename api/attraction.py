@@ -1,7 +1,11 @@
-from flask import Blueprint, request
+from flask import *
 import api.mysql_connector as connector
 
-attraction = Blueprint("attraction", __name__, static_folder="static", template_folder="templates")
+attraction = Blueprint(
+	"attraction", 
+	__name__, 
+	static_folder="static", 
+	template_folder="templates")
 
 cnxpool = connector.connect()
 
@@ -16,7 +20,12 @@ def api_attractions():
 		page = request.args.get("page", type=int)
 		page_size = 12
 		if keyword: 
-			sql = "SELECT * FROM `attraction_info` WHERE `category` = %s or `name` LIKE %s LIMIT %s OFFSET %s;"
+			sql = """
+				SELECT * 
+				FROM `attraction_info` 
+				WHERE `category` = %s or `name` LIKE %s 
+				LIMIT %s OFFSET %s;
+				"""
 			values = (keyword, "%"+keyword+"%", page_size, page * page_size)
 			cursor.execute(sql, values)
 			database = cursor.fetchall()
@@ -24,7 +33,11 @@ def api_attractions():
 			cursor.execute(sql, values_next_page)
 			database_next_page = cursor.fetchall()
 		else:
-			sql = "SELECT * FROM `attraction_info` LIMIT %s OFFSET %s;"
+			sql = """
+				SELECT * 
+				FROM `attraction_info` 
+				LIMIT %s OFFSET %s;
+				"""
 			values = (page_size, page * page_size)
 			cursor.execute(sql, values)
 			database = cursor.fetchall()
@@ -77,7 +90,11 @@ def api_attraction_id(attractionId):
 	try:
 		cnx = cnxpool.get_connection()
 		cursor = cnx.cursor()
-		sql = "SELECT * FROM `attraction_info` WHERE id = %s;"
+		sql = """
+			SELECT * 
+			FROM `attraction_info` 
+			WHERE id = %s;
+			"""
 		values = (attractionId,)
 		cursor.execute(sql, values)
 		database = cursor.fetchone()
