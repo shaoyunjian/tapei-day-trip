@@ -100,6 +100,7 @@ main {
 }
 
 .category {
+  cursor: pointer;
   width: 120px;
   height: 40px;
   padding: 0 10px;
