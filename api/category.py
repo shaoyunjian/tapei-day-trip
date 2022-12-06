@@ -1,7 +1,11 @@
-from flask import Blueprint
+from flask import *
 import api.mysql_connector as connector
 
-category = Blueprint("category", __name__, static_folder="static", template_folder="templates")
+category = Blueprint(
+	"category", 
+	__name__, 
+	static_folder="static", 
+	template_folder="templates")
 
 cnxpool = connector.connect()
 
@@ -12,7 +16,10 @@ def api_categories():
 	try:
 		cnx = cnxpool.get_connection()
 		cursor = cnx.cursor()
-		sql = "SELECT DISTINCT `category` FROM `attraction_info`;"
+		sql = """
+			SELECT DISTINCT `category` 
+			FROM `attraction_info`;
+			"""
 		cursor.execute(sql)
 		database= cursor.fetchall()
 		categories = []
