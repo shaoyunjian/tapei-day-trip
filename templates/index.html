@@ -18,7 +18,11 @@
       <a href="/" class="title">台北一日遊</a>
       <div class="nav">
         <a href="">預定行程</a>
-        <a href="" class="nav-login-register-btn" onclick="openLoginModal()">登入/註冊</a>
+        <div class="nav-login-logout-btn">
+          <div class="nav-login-register-btn">登入/註冊</div>
+          <div class="logout-btn">登出系統</div>
+        </div>
+        
       </div>
     </div>
 
@@ -26,10 +30,11 @@
     <div class="login-modal" id="login-modal">
       <div class="login-modal-content">
         <div class="login-title">登入會員帳號</div>
-        <img src="/static/images/icon_close.png" class="login-close-btn" onclick="closeModal()">
-        <input type="email" placeholder="輸入電子信箱" class="login-input">
-        <input type="password" placeholder="輸入密碼" class="login-input">
+        <img src="/static/images/icon_close.png" class="modal-close-btn">
+        <input type="email" placeholder="輸入電子信箱" class="login-input" id="input-login-email">
+        <input type="password" placeholder="輸入密碼" class="login-input" id="input-login-password">
         <button class="login-btn">登入帳戶</button>
+        <div id="login-modal-status"></div>
         <div class="login-modal-footer">還沒有帳戶？點此註冊</div>
       </div>
     </div>
@@ -38,11 +43,12 @@
     <div class="register-modal" id="register-modal">
       <div class="register-modal-content">
         <div class="register-title">註冊會員帳號</div>
-        <img src="/static/images/icon_close.png" class="register-close-btn" onclick="closeModal()">
-        <input type="text" placeholder="輸入姓名" class="register-input">
-        <input type="email" placeholder="輸入電子信箱" class="register-input">
-        <input type="password" placeholder="輸入密碼" class="register-input">
-        <button class="register-btn" onclick="closeModal()">註冊帳戶</button>
+        <img src="/static/images/icon_close.png" class="modal-close-btn">
+        <input type="text" placeholder="輸入姓名" class="register-input" name="name" id="input-register-name">
+        <input type="email" placeholder="輸入電子信箱" class="register-input" name="email" id="input-register-email">
+        <input type="password" placeholder="輸入密碼" class="register-input" name="password" id="input-register-password">
+        <button class="register-btn">註冊帳戶</button>
+        <div id="register-modal-status"></div>
         <div class="register-modal-footer">已經有帳戶了？點此登入</div>
       </div>
     </div>
