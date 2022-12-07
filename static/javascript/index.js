@@ -15,14 +15,14 @@ function initialLoad(page, keyword){
     .then(response => {return response.json()})
     .then(data => {
       nextPageArray = []
-      const nextPage = data["nextPage"]
+      const nextPage = data.nextPage
       const dataLength = getAttractions(data)[1]
 
-      if(dataLength === 0){
+      if(!dataLength){
         attractionArea.innerHTML = "沒有相關搜尋結果"
       }
 
-      if(nextPage !== null){
+      if(nextPage){
         nextPageArray.push(nextPage)
       }
       
@@ -39,7 +39,7 @@ function initialLoad(page, keyword){
 function loadMoreAttractions(nextPage, keyword){
   const footer = document.querySelector("footer")
   const callback = (entries, observer) => {
-  if(entries[0].isIntersecting && isLoading === false){
+  if(entries[0].isIntersecting && !isLoading){
     loadAmount += 1
     nextPage = nextPageArray.length
     if (loadAmount-nextPage <= 0){
@@ -73,14 +73,14 @@ function fetchAPI(page, keyword){
 
 // Get attractions
 function getAttractions(data){
-  const nextPage = data["nextPage"]
-  const dataLength = data["data"].length
-  for (let i =0; i < data["data"].length; i++){
-    const attractionID = data["data"][i]["id"]
-    const imgURL = data["data"][i]["images"][0]
-    const name = data["data"][i]["name"]
-    const mrt = data["data"][i]["mrt"]
-    const category = data["data"][i]["category"]
+  const nextPage = data.nextPage
+  const dataLength = data.data.length
+  for (let i =0; i < data.data.length; i++){
+    const attractionID = data.data[i].id
+    const imgURL = data.data[i].images[0]
+    const name = data.data[i].name
+    const mrt = data.data[i].mrt
+    const category = data.data[i].category
 
     const attraction = document.createElement("a")
     attraction.setAttribute("href", `/attraction/${attractionID}`)
@@ -134,10 +134,10 @@ const categoryContainer = document.querySelector(".category-container")
 fetch("/api/categories")
 .then(response => {return response.json()})
 .then(data => {
-  for(let i = 0; i< data["data"].length; i++){
+  for(let i = 0; i< data.data.length; i++){
     const category = document.createElement("div")
     category.classList.add("category")
-    category.textContent = data["data"][i]
+    category.textContent = data.data[i]
     category.setAttribute("data-id", `${i}`)
     categoryContainer.appendChild(category)
   }
@@ -145,7 +145,7 @@ fetch("/api/categories")
   categoryContainer.addEventListener("click", (event)=>{
     const categoryID = Number(event.target.dataset.id)
     if(event.target.dataset.id){
-    keywordInput.value = data["data"][categoryID]}
+    keywordInput.value = data.data[categoryID]}
   })
 })
 
@@ -162,3 +162,4 @@ document.addEventListener("click", (event) => {
     categoryContainer.classList.add("search-mode")
   }
 })
+

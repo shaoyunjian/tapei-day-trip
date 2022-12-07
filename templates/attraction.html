@@ -1,25 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "index.html" %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block style %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/attraction.css')}}">
-  <title>台北一日遊</title>
-</head>
+  {% endblock %}
 
-<body>
-  <header>
-    <div class="navigation-bar">
-      <a href="/" class="title">台北一日遊</a>
-      <div class="nav">
-        <a href="">預定行程</a>
-        <a href="">登入/註冊</a>
-      </div>
-    </div>
-  </header>
-
+  {% block content %}
   <main>
     <div class="main-container">
       
@@ -28,7 +13,9 @@
 
         <!-- slideshow -->
         <div class="slideshow-container">
-          <img src="../static/images/Picture.png" alt="attraction-images" class="slide-images">
+          <div class="slide-image-container">
+            <!-- <img src="../static/images/Picture.png" alt="attraction-images" class="slide-images"> -->
+          </div>
           <div class="left-arrow"></div>
           <div class="right-arrow"></div>
           <div class="dots">
@@ -80,8 +67,8 @@
       </div>  
     </div>
   </main>
+  {% endblock %}
 
-  <footer>COPYRIGHT © 2022 台北一日遊</footer>
+  {% block script %}
   <script src="{{ url_for('static', filename='javascript/attraction.js')}}"></script>
-</body>
-</html>
+  {% endblock %}

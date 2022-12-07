@@ -1,6 +1,7 @@
 "use strict"
 const url = window.location.href
 const attractionID = url.split("/")[4]
+const slideImageContainer = document.querySelector(".slide-image-container")
 const slideImages = document.querySelector(".slide-images")
 const attractionName = document.querySelector(".attraction-name")
 const categoryMrt = document.querySelector(".category-mrt")
@@ -30,7 +31,7 @@ fetch(`/api/attraction/${attractionID}`)
   const imageNumber = data.images.length
   const dots = document.querySelector(".dots")
 
-  slideImages.src = images[0]
+  slideImageContainer.innerHTML =`<img src="${images[0]}" alt="attraction-images" class="slide-images">`
   attractionName.textContent = name
   categoryMrt.innerHTML = `${category} at ${mrt}`
   attractionIntro.textContent = description
@@ -43,38 +44,66 @@ fetch(`/api/attraction/${attractionID}`)
     attractionImages.push(images[i])
   }
 
+  
   // Slideshow
   const leftArrow = document.querySelector(".left-arrow")
   const rightArrow = document.querySelector(".right-arrow")
   const dot = document.querySelector(".dot")
+  const classNameIsDot = document.getElementsByClassName("dot");
   dot.classList.add("active")
   let currentIndex = 0
-  const classNameIsDot = document.getElementsByClassName("dot");
-  const dotsNumber = classNameIsDot.length
 
-  // Click left arrow
+
+  // Click left arrow to change image
   leftArrow.addEventListener("click", ()=>{ 
     currentIndex -= 1
     if(currentIndex < 0){currentIndex = imageNumber - 1} 
-    slideImages.src = attractionImages[currentIndex]
+    
+    slideImageContainer.innerHTML =`
+      <img src="${attractionImages[currentIndex]}" alt="attraction-images" class="slide-images">`
+
+    const activeItem = document.querySelector(".active")
+    if(activeItem){activeItem.classList.remove("active")}
 
     classNameIsDot[currentIndex].className += " active"
-    if(currentIndex === dotsNumber - 1 ){
+    if(currentIndex === imageNumber - 1 ){
       classNameIsDot[0].className = classNameIsDot[0].className.replace(" active", "")
     } else {classNameIsDot[currentIndex + 1].className = classNameIsDot[currentIndex + 1].className.replace(" active", "")}
   })
 
-  // Click right arrow
+
+  // Click right arrow to change image
   rightArrow.addEventListener("click", ()=>{
     currentIndex += 1
     if(currentIndex + 1 > imageNumber){currentIndex = 0} 
-    slideImages.src = attractionImages[currentIndex]
+    slideImageContainer.innerHTML =`
+      <img src="${attractionImages[currentIndex]}" alt="attraction-images" class="slide-images">`
 
+    const activeItem = document.querySelector(".active")
+    if(activeItem){activeItem.classList.remove("active")}
+    
     classNameIsDot[currentIndex].className += " active"
-    if(currentIndex === 0){
-      classNameIsDot[dotsNumber - 1].className = classNameIsDot[dotsNumber - 1].className.replace(" active", "")
+    if(!currentIndex){
+      classNameIsDot[imageNumber - 1].className = classNameIsDot[imageNumber - 1].className.replace(" active", "")
     } else {classNameIsDot[currentIndex - 1].className = classNameIsDot[currentIndex - 1].className.replace(" active", "")}
   })
+
+  
+  // Click dots to change image
+  dots.addEventListener("click", (event)=>{
+    for(let i = 0; i < imageNumber; i++){
+      if(event.target.dataset.id === `${i}`){
+        currentIndex = i
+        slideImageContainer.innerHTML =`
+          <img src="${attractionImages[i]}" alt="attraction-images" class="slide-images">`
+
+        const activeItem = document.querySelector(".active")
+        if(activeItem){activeItem.classList.remove("active")}
+        classNameIsDot[i].className += " active"
+      }
+    }
+  })
+
 })
 
 
