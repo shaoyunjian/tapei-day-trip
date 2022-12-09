@@ -1,6 +1,7 @@
 "use strict"
 const url = window.location.href
 const attractionID = url.split("/")[4]
+const title = document.querySelector("title")
 const slideImageContainer = document.querySelector(".slide-image-container")
 const slideImages = document.querySelector(".slide-images")
 const attractionName = document.querySelector(".attraction-name")
@@ -31,6 +32,7 @@ fetch(`/api/attraction/${attractionID}`)
   const imageNumber = data.images.length
   const dots = document.querySelector(".dots")
 
+  title.textContent = name + " - 台北一日遊"
   slideImageContainer.innerHTML =`<img src="${images[0]}" alt="attraction-images" class="slide-images">`
   attractionName.textContent = name
   categoryMrt.innerHTML = `${category} at ${mrt}`
