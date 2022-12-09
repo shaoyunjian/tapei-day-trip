@@ -9,7 +9,9 @@
   {% block style %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css')}}">
   {% endblock %}
-  <title>{% block title %}{% endblock %} 台北一日遊</title>
+  {% block title %}
+  <title>台北一日遊</title>
+  {% endblock %}
 </head>
 
 <body>
