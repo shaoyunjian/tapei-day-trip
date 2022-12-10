@@ -43,6 +43,23 @@ function closeModal() {
   registerModal.style.display = "none"
 }
 
+// -------------- User data validation ------------
+
+function userDataValidation(name, email, password){
+  const name_regex = /^.{1,10}$/
+  const email_regex = /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/
+  const password_regex = /^[a-zA-Z0-9]{8,16}$/
+  
+  if (!name_regex.test(name)) {
+    return "invalid name"
+  } else if (!email_regex.test(email)) {
+    return "invalid email"
+  } else if (!password_regex.test(password)) {
+    return "invalid password"
+  } else {
+    return "valid"
+  }
+}
 
 // ---------------  Register ---------------------- 
 
@@ -54,11 +71,28 @@ const registerModalStatus = document.querySelector("#register-modal-status")
 
 registerBtn.addEventListener("click", () => {
   const url = "/api/user"
-  const inputRegisterNameValue = inputRegisterName.value
-  const inputRegisterEmailValue = inputRegisterEmail.value
-  const inputRegisterPasswordValue = inputRegisterPassword.value
+  const inputRegisterNameValue = inputRegisterName.value.trim()
+  const inputRegisterEmailValue = inputRegisterEmail.value.trim()
+  const inputRegisterPasswordValue = inputRegisterPassword.value.trim()
+  const registerValidationResult = userDataValidation(inputRegisterNameValue, inputRegisterEmailValue, inputRegisterPasswordValue)
 
-  register()
+  // register validation
+  if (!inputRegisterNameValue || !inputRegisterEmailValue || !inputRegisterPasswordValue){
+    registerModalStatus.innerHTML = `
+      <div class="status-description">請不要有空白</div>`
+  } else if (registerValidationResult === "invalid name") {
+    registerModalStatus.innerHTML = `
+      <div class="status-description">姓名請輸入1~10個字元</div>`
+  } else if (registerValidationResult === "invalid email") {
+    registerModalStatus.innerHTML = `
+      <div class="status-description">電子郵件不符合格式</div>`
+  } else if (registerValidationResult === "invalid password") {
+    registerModalStatus.innerHTML = `
+      <div class="status-description">密碼請輸入8至16個字母或數字</div>`
+  } else {
+    register()
+  }
+
   async function register() {
     const response = await fetch(url, {
       method: "POST",
@@ -69,15 +103,13 @@ registerBtn.addEventListener("click", () => {
         password: inputRegisterPasswordValue
       })
     })
+    
     const jsonData = await response.json()
 
-    if (jsonData["message"] === "email already exists"){
+    if (jsonData.message === "email already exists"){
       registerModalStatus.innerHTML = `
       <div class="status-description">電子信箱已註冊</div>`
-    } else if (jsonData["message"] === "empty input"){
-      registerModalStatus.innerHTML = `
-      <div class="status-description">請勿輸入空白</div>`
-    } else if(jsonData["ok"] === true){
+    } else if(jsonData.ok === true){
       registerModalStatus.innerHTML = `
       <div class="status-description">註冊成功</div>`
       registerModalFooter.innerHTML = "點此登入"
@@ -115,18 +147,13 @@ loginBtn.addEventListener("click", () => {
     })
 
     const jsonData = await response.json()
-    if (jsonData["ok"]) {
+    if (jsonData.ok) {
      window.location = window.location.href
-    } else if (jsonData["message"] === "empty input"){
-      loginModalStatus.innerHTML = `
-      <div class="status-description">請勿輸入空白</div>`
     } else {
       loginModalStatus.innerHTML = `
       <div class="status-description">電子郵件或密碼輸入錯誤</div>`
     }
   }
-
-  inputLoginEmail.value = ""
   inputLoginPassword.value= ""
 })
 
@@ -145,7 +172,7 @@ window.addEventListener("DOMContentLoaded", () => {
       headers: {"Content-Type": "application/json"}
     })
     const jsonData = await response.json()
-    if(jsonData["data"] !== null){
+    if(jsonData.data !== null){
       navLoginRegisterBtn.style.display="none"
       logoutBtn.style.display="block"
     } 
@@ -170,5 +197,4 @@ logoutBtn.addEventListener("click", (event) => {
     const jsonData = await response.json()
     window.location = window.location.href
   }
-
 })
