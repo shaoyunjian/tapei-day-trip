@@ -218,3 +218,15 @@ logoutBtn.addEventListener("click", (event) => {
     window.location = window.location.href
   }
 })
+
+// ---------------- Itinerary booking--------------
+const bookingCartBtn = document.querySelector(".booking-cart-btn")
+
+bookingCartBtn.addEventListener("click", () => {
+  checkLoginStatus()
+  if (isLoggedIn){
+      window.location = "/booking"
+  } else {
+    openLoginModal()
+  }
+})
