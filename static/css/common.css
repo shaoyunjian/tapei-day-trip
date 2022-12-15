@@ -31,7 +31,7 @@ header {
   width: 1200px;
   display: flex;
   margin: auto;
-  padding: 10px 0;
+  padding: 10px;
 }
 
 .title {
@@ -65,8 +65,7 @@ header {
 
 /* user login */
 
-.login-modal,
-.register-modal {
+.modal {
   background-color: rgba(0, 0, 0, 0.25);
   width: 100%;
   height: 100%;
@@ -75,20 +74,19 @@ header {
   z-index: 3;
 }
 
-.login-modal-content,
-.register-modal-content {
+.modal-content {
   position: relative;
   background-color: #FFFFFF;
-  ;
   width: 340px;
+  height: auto;
+  min-height: 200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   border-radius: 0 0 6px 6px;
 }
 
-.login-modal-content::before,
-.register-modal-content::before {
+.modal-content::before {
   content: "";
   width: 340px;
   height: 10px;
@@ -98,20 +96,7 @@ header {
   top: -10px;
 }
 
-
-.login-modal-content {
-  /* height: 265px; */
-  height: auto;
-  padding: 10px 0;
-}
-
-.register-modal-content {
-  /* height: 322px; */
-  height: auto;
-  padding: 10px 0;
-}
-
-.modal-close-btn{
+.modal-close-btn {
   cursor: pointer;
   position: absolute;
   top: 17px;
@@ -126,8 +111,7 @@ header {
   height: 18px;
 }
 
-.login-title,
-.register-title {
+.modal-content-title{
   text-align: center;
   font-size: 24px;
   font-weight: 700;
@@ -136,6 +120,29 @@ header {
   color: #666666;
   margin: 15px auto 10px auto;
   line-height: 27px;
+}
+
+.modal-content-detail {
+  text-align: center;
+  margin: 10px;
+  font-size: 22px;
+  font-weight: 500;
+  color: #666666;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  height: auto;
+}
+
+.modal-content-detail > div {
+  margin-bottom: 10px;
+}
+
+#register-modal-status,
+#login-modal-status {
+  margin: 0px;
 }
 
 .login-input,
@@ -170,6 +177,7 @@ header {
   padding: 15px 0;
 }
 
+.modal-content-btn,
 .login-btn,
 .register-btn {
   cursor: pointer;
@@ -179,9 +187,19 @@ header {
   font-size: 19px;
 }
 
+.modal-content-btn {
+  background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+  width: 100px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 5px;
+  margin: 30px auto -30px auto;
+}
+
+.modal-content-btn:hover,
 .login-btn:hover,
 .register-btn:hover {
-  background-color: #2e7687;
+  background: linear-gradient(270deg, #66AABB 0%, #337788 100%);
 }
 
 .login-modal-footer,
@@ -199,15 +217,9 @@ header {
   font-weight: 700;
 }
 
-
-.login-modal {
+.modal {
   display: none;
 }
-
-.register-modal {
-  display: none;
-}
-
 
 .status-description{
   cursor: default;
@@ -220,4 +232,21 @@ header {
 
 .display-none {
   display: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* footer */
+footer {
+  flex-grow: 1;
+  background: #757575;
+  color: #FFFFFF;
+  line-height: 104px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
 }
