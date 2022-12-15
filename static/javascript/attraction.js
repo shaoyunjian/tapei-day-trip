@@ -1,6 +1,6 @@
 "use strict"
 const url = window.location.href
-const attractionID = url.split("/")[4]
+const attractionId = url.split("/")[4]
 const title = document.querySelector("title")
 const slideImageContainer = document.querySelector(".slide-image-container")
 const slideImages = document.querySelector(".slide-images")
@@ -17,11 +17,14 @@ attractionIntro.textContent = ""
 addressDetail.textContent = ""
 transportationDetail.textContent = ""
 
-// Fetch api 
-fetch(`/api/attraction/${attractionID}`)
-.then(response => {return response.json()})
-.then(response =>{
-  const data = response.data
+// ----------- Fetch attraction id ------------
+
+fetchAttractionId()
+async function fetchAttractionId(){
+  const response = await fetch(`/api/attraction/${attractionId}`)
+  const jsonData = await response.json()
+
+  const data = jsonData.data
   const images = data.images
   const name = data.name
   const category = data.category
@@ -40,14 +43,15 @@ fetch(`/api/attraction/${attractionID}`)
   addressDetail.textContent = address
   transportationDetail.textContent = transport
   
-  // Add dots and attraction images
+  // -------- Add dots and attraction images --------
+
   for(let i = 0; i< imageNumber; i++){
     dots.innerHTML +=`<span class="dot" data-id="${i}"></span>`
     attractionImages.push(images[i])
   }
 
-  
-  // Slideshow
+  // ---------------- Slideshow ----------------
+
   const leftArrow = document.querySelector(".left-arrow")
   const rightArrow = document.querySelector(".right-arrow")
   const dot = document.querySelector(".dot")
@@ -56,7 +60,8 @@ fetch(`/api/attraction/${attractionID}`)
   let currentIndex = 0
 
 
-  // Click left arrow to change image
+  // ------ Slideshow: left arrow ------ 
+
   leftArrow.addEventListener("click", ()=>{ 
     currentIndex -= 1
     if(currentIndex < 0){currentIndex = imageNumber - 1} 
@@ -74,7 +79,8 @@ fetch(`/api/attraction/${attractionID}`)
   })
 
 
-  // Click right arrow to change image
+  // ------ Slideshow: right arrow ------ 
+  
   rightArrow.addEventListener("click", ()=>{
     currentIndex += 1
     if(currentIndex + 1 > imageNumber){currentIndex = 0} 
@@ -91,7 +97,8 @@ fetch(`/api/attraction/${attractionID}`)
   })
 
   
-  // Click dots to change image
+  // ------ Slideshow: dots ------ 
+
   dots.addEventListener("click", (event)=>{
     for(let i = 0; i < imageNumber; i++){
       if(event.target.dataset.id === `${i}`){
@@ -105,11 +112,10 @@ fetch(`/api/attraction/${attractionID}`)
       }
     }
   })
+}
 
-})
+// -------- Click to change itinerary time and price --------
 
-
-// Click to change itinerary time
 const price = document.querySelector(".price")
 const booking = document.querySelector(".booking")
 
@@ -122,5 +128,50 @@ booking.addEventListener("click", (event) => {
 })
 
 
+// -------- Itinerary booking -------------
 
+const startBookingBtn = document.querySelector("#start-booking-btn")
 
+startBookingBtn.addEventListener("click", (event) => {
+  event.preventDefault()
+  const itineraryDateValue = document.querySelector('input[type="date"]').value
+  const itineraryTimeValue = document.querySelector('input[name="itinerary"]:checked').value
+  const itineraryPriceValue = (itineraryTimeValue === "morning") ? "2000" : "2500"
+  
+  checkLoginStatus()
+  if (!isLoggedIn){
+    openLoginModal()
+  } else {
+    fetchAddItinerary()
+    
+    async function fetchAddItinerary(){
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          attractionId: attractionId,
+          itineraryDate: itineraryDateValue,
+          itineraryTime: itineraryTimeValue,
+          itineraryPrice: itineraryPriceValue
+        })
+      })
+
+      const jsonData = await response.json()
+
+      if (jsonData.ok){
+        window.location = "/booking"
+      } else if (jsonData.message === "data already exists"){
+        const itineraryTime = (itineraryTimeValue === "morning") ? "上半天" : "下半天"
+        let message = `
+          <div>無法加入</div>
+          <div style="font-size: 16px; margin-top: 10px;">
+          (※${itineraryDateValue} ${itineraryTime} 已有預定行程)
+          </div>
+        `
+        openMessageModal(message, "重新預定", "")
+      } else if (jsonData.message === "input error"){
+        openMessageModal("注意：請選擇日期", "好", "")
+      }
+    }
+  }
+})
