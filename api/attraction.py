@@ -21,7 +21,9 @@ def api_attractions():
 		page_size = 12
 		if keyword: 
 			sql = """
-				SELECT `attraction_info`.*, GROUP_CONCAT(`url`) AS `url`
+				SELECT 
+					`attraction_info`.*, 
+					GROUP_CONCAT(`url`) AS `url`
 				FROM `attraction_info`
 				INNER JOIN `image`
 				ON `attraction_info`.`id`=`image`.`attraction_id`
@@ -37,7 +39,9 @@ def api_attractions():
 			database = cursor.fetchall()
 		else:
 			sql = """
-				SELECT `attraction_info`.*, GROUP_CONCAT(`url`) AS `url`
+				SELECT 
+					`attraction_info`.*, 
+					GROUP_CONCAT(`url`) AS `url`
 				FROM `attraction_info`
 				INNER JOIN `image`
 				ON `attraction_info`.`id`=`image`.`attraction_id`
@@ -62,8 +66,8 @@ def api_attractions():
 				"address": data[4],
 				"transport": data[5],
 				"mrt": data[6],
-				"lat": data[7],
-				"lng": data[8],
+				"lat": float(data[7]),
+				"lng": float(data[8]),
 				"images": data[9].split(",")
 			}
 			attractions_info.append(attraction_info)
@@ -75,11 +79,13 @@ def api_attractions():
 
 		return {
 			"nextPage": next_page ,
-			"data": attractions_info}, 200
+			"data": attractions_info
+		}, 200
 	except:
 		return {
 			"error": True,
-			"message": "Error"}, 500
+			"message": "Error"
+		}, 500
 	finally:
 		cursor.close()
 		connection.close()
@@ -100,7 +106,9 @@ def api_attraction_id(attractionId):
 		connection = cnxpool.get_connection()
 		cursor = connection.cursor()
 		sql = """
-			SELECT `attraction_info`.*, GROUP_CONCAT(`url`) AS `url`
+			SELECT 
+				`attraction_info`.*, 
+				GROUP_CONCAT(`url`) AS `url`
 			FROM `attraction_info`
 			INNER JOIN `image`
 			ON `attraction_info`.`id`=`image`.`attraction_id`
@@ -120,11 +128,13 @@ def api_attraction_id(attractionId):
 			"address": database[4],
 			"transport": database[5],
 			"mrt": database[6],
-			"lat": database[7],
-			"lng": database[8],
+			"lat": float(database[7]),
+			"lng": float(database[8]),
 			"images": database[9].split(",")
 			}
-			return {"data": attraction_info}, 200
+			return {
+				"data": attraction_info
+			}, 200
 		else:
 			return {
 				"error": True,
@@ -133,7 +143,8 @@ def api_attraction_id(attractionId):
 	except:
 		return {
 			"error": True,
-			"message": "Error"}, 500
+			"message": "Error"
+		}, 500
 	finally:
 			cursor.close()
 			connection.close()
