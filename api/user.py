@@ -118,11 +118,17 @@ def logged_in_user_info():
     encoded_jwt= request.cookies.get("token")
     if encoded_jwt:
       decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
-      return decoded_jwt, 200
+      return {
+        "data": {
+          "id": decoded_jwt["id"],
+          "name": decoded_jwt["name"],
+          "email": decoded_jwt["email"]
+        }
+      }, 200
     else:
-      return {"data": None}
+      return {"data": None}, 200
   except jwt.exceptions.InvalidTokenError:
-    return {"data": None}
+    return {"data": None}, 401
 
 
 # ---------------- Login ---------------------
@@ -146,7 +152,7 @@ def login():
     cursor.execute(sql, values)
     userData = cursor.fetchone()
 
-    if not input_email or not input_email:
+    if not input_email or not input_password:
       return {
         "error": True,
         "message": "empty input"
@@ -162,16 +168,16 @@ def login():
         response = make_response({"ok": True})
         response.set_cookie(key="token", value=encoded_jwt, max_age=24*60*60*7)
         return response, 200
-    else:
-      return {
-      "error": True,
-      "message": "email or password is incorrect"
-    }, 400
+      else:
+        return {
+          "error": True,
+          "message": "email or password is incorrect"
+        }, 400
   except:
     return {
       "error": True,
       "message": "error"
-    }
+    }, 500
   finally:
     cursor.close()
     connection.close()
