@@ -2,11 +2,13 @@ from flask import *
 from api.attraction import attraction
 from api.category import category
 from api.user import user
+from api.booking import booking
 app=Flask(__name__)
 
 app.register_blueprint(attraction)
 app.register_blueprint(category)
 app.register_blueprint(user)
+app.register_blueprint(booking)
 
 app.config["JSON_AS_ASCII"]=False
 app.config["TEMPLATES_AUTO_RELOAD"]=True
