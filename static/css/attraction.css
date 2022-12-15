@@ -104,7 +104,7 @@
 }
 
 input[type="date"] {
-  cursor: pointer;
+  cursor: text;
   border: none;
   outline: none;
   padding: 5px 10px;
@@ -163,7 +163,7 @@ input[type=radio] {
 
 
 /* booking btn */
-#booking-btn {
+#start-booking-btn {
   color: #FFFFFF;
   background-color: #448899;
   border: none;
@@ -175,6 +175,10 @@ input[type=radio] {
   line-height: 36px;
   margin-top: 10px;
   cursor: pointer;
+}
+
+#start-booking-btn:hover {
+  background: linear-gradient(270deg, #66AABB 0%, #337788 100%);
 }
 
 /* attractions introduction */
@@ -195,17 +199,6 @@ input[type=radio] {
   width: 100%;
 }
 
-
-/* footer */
-footer {
-  background: #757575;
-  color: #FFFFFF;
-  height: 104px;
-  line-height: 104px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 700;
-}
 
 /* RWD */
 @media screen and (max-width: 1200px) {
