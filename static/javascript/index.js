@@ -9,29 +9,30 @@ let isLoading = false
 window.addEventListener("DOMContentLoaded", initialLoad(initialPage, initialKeyword))
 
 // Initial loading
-function initialLoad(page, keyword){
-  isLoading = true
-  fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
-    .then(response => {return response.json()})
-    .then(data => {
-      nextPageArray = []
-      const nextPage = data.nextPage
-      const dataLength = getAttractions(data)[1]
+async function initialLoad(page, keyword){
+  try {
+    isLoading = true
+    const url = `/api/attractions?page=${page}&keyword=${keyword}`
+    const response = await fetch(url)
+    const jsonData = await response.json()
 
-      if(!dataLength){
-        attractionArea.innerHTML = "沒有相關搜尋結果"
-      }
+    nextPageArray = []
+    const nextPage = jsonData.nextPage
+    const dataLength = getAttractions(jsonData)[1]
 
-      if(nextPage){
-        nextPageArray.push(nextPage)
-      }
-      
-      loadMoreAttractions(nextPage, keyword)
-      isLoading = false
-    }).catch((error)=>{
-      console.log(error)
-      isLoading = false
-    })
+    if(!dataLength){
+      attractionArea.innerHTML = "沒有相關搜尋結果"
+    }
+
+    if(nextPage){
+      nextPageArray.push(nextPage)
+    }
+    
+    loadMoreAttractions(nextPage, keyword)
+    isLoading = false
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 
@@ -39,14 +40,15 @@ function initialLoad(page, keyword){
 function loadMoreAttractions(nextPage, keyword){
   const footer = document.querySelector("footer")
   const callback = (entries, observer) => {
-  if(entries[0].isIntersecting && !isLoading){
-    loadAmount += 1
-    nextPage = nextPageArray.length
-    if (loadAmount-nextPage <= 0){
-      fetchAttractionsByPageOrKeyword(nextPage, keyword)
-    } else{
-      observer.unobserve(footer)
-    }}
+    if (entries[0].isIntersecting && !isLoading) {
+      loadAmount += 1
+      nextPage = nextPageArray.length
+      if (loadAmount-nextPage <= 0) {
+        fetchAttractionsByPageOrKeyword(nextPage, keyword)
+      } else {
+        observer.unobserve(footer)
+      }
+    }
   }
   const option = {threshold: 0.5} //50% of the target is visible
   const observer = new IntersectionObserver(callback, option)
@@ -54,20 +56,22 @@ function loadMoreAttractions(nextPage, keyword){
 }
 
 
-// Fetch API
-function fetchAttractionsByPageOrKeyword(page, keyword){
-  isLoading = true
-  fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
-  .then(response => {return response.json()})
-  .then(data => {
-    let nextPage = getAttractions(data)[0]
+// Fetch attractions by page or keyword
+async function fetchAttractionsByPageOrKeyword(page, keyword) {
+  try {
+    isLoading = true
+    const url = `/api/attractions?page=${page}&keyword=${keyword}`
+    const response = await fetch(url)
+    const jsonData = await response.json()
+
+    let nextPage = getAttractions(jsonData)[0]
     if(nextPage){
-      nextPageArray.push(nextPage)}
+      nextPageArray.push(nextPage)
+    }
     isLoading = false
-  }).catch((error)=>{
+  } catch (error) {
     console.log(error)
-    isLoading = false
-  })
+  }
 }
 
 
@@ -119,7 +123,7 @@ function getAttractions(data){
 const keywordInput = document.querySelector("#keyword-input")
 const searchBtn = document.querySelector("#search-btn")
 
-searchBtn.addEventListener("click", event => {
+searchBtn.addEventListener("click", (event) => {
   event.preventDefault() 
   const inputValue = keywordInput.value
   attractionArea.innerHTML = ""
@@ -131,23 +135,31 @@ searchBtn.addEventListener("click", event => {
 // Use category keyword to search attractions
 const categoryContainer = document.querySelector(".category-container")
 
-fetch("/api/categories")
-.then(response => {return response.json()})
-.then(data => {
-  for(let i = 0; i< data.data.length; i++){
-    const category = document.createElement("div")
-    category.classList.add("category")
-    category.textContent = data.data[i]
-    category.setAttribute("data-id", `${i}`)
-    categoryContainer.appendChild(category)
+fetchCategories()
+async function fetchCategories() {
+  try {
+    const url = "/api/categories"
+    const response = await fetch(url)
+    const jsonData = await response.json()
+
+    jsonData.data.forEach((element) => {
+      const category = document.createElement("div")
+      category.classList.add("category")
+      category.textContent = element
+      category.setAttribute("data-id", `${element}`)
+      categoryContainer.appendChild(category)
+
+      categoryContainer.addEventListener("click", (event) => {
+        if(event.target.dataset.id === element) {
+          keywordInput.value = element
+        }
+      })
+    })
   }
-  
-  categoryContainer.addEventListener("click", (event)=>{
-    const categoryID = Number(event.target.dataset.id)
-    if(event.target.dataset.id){
-    keywordInput.value = data.data[categoryID]}
-  })
-})
+  catch (error) { 
+    console.log(error)
+  }
+}
 
 
 // Click search btn to open/hide category menu
