@@ -43,7 +43,7 @@ function loadMoreAttractions(nextPage, keyword){
     loadAmount += 1
     nextPage = nextPageArray.length
     if (loadAmount-nextPage <= 0){
-      fetchAPI(nextPage, keyword)
+      fetchAttractionsByPageOrKeyword(nextPage, keyword)
     } else{
       observer.unobserve(footer)
     }}
@@ -55,7 +55,7 @@ function loadMoreAttractions(nextPage, keyword){
 
 
 // Fetch API
-function fetchAPI(page, keyword){
+function fetchAttractionsByPageOrKeyword(page, keyword){
   isLoading = true
   fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
   .then(response => {return response.json()})

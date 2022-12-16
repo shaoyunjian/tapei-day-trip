@@ -1,12 +1,16 @@
 "use strict"
 // --------------- User Modal  ------------------
 
-const loginModal = document.querySelector(".login-modal")
-const registerModal = document.querySelector(".register-modal")
+const loginModal = document.querySelector("#login-modal")
+const registerModal = document.querySelector("#register-modal")
+const modal = document.querySelectorAll(".modal")
 const modalCloseBtn = document.querySelectorAll(".modal-close-btn")
 const loginModalFooter = document.querySelector(".login-modal-footer")
 const registerModalFooter = document.querySelector(".register-modal-footer")
 const navLoginRegisterBtn = document.querySelector(".nav-login-register-btn")
+const popupNotification = document.querySelector("#popup-notification")
+const modalMessage = document.querySelector(".modal-message")
+const modalContentBtn = document.querySelector(".modal-content-btn")
 
 navLoginRegisterBtn.addEventListener("click", openLoginModal)
 loginModalFooter.addEventListener("click", openRegisterModal)
@@ -19,7 +23,9 @@ modalCloseBtn.forEach((value) => {
 })
 
 document.addEventListener("click", (event) => {
-  if(event.target === loginModal || event.target === registerModal){
+  if(event.target === loginModal || 
+    event.target === registerModal ||
+    event.target === popupNotification){
     closeModal()
   }
 })
@@ -27,8 +33,7 @@ document.addEventListener("click", (event) => {
 
 // ------------- Modal function -----------------
 
-function openLoginModal(event) {
-  event.preventDefault()
+function openLoginModal() {
   loginModal.style.display = "block"
   registerModal.style.display = "none"
 }
@@ -38,11 +43,36 @@ function openRegisterModal() {
   registerModal.style.display = "block"
 }
 
+function openMessageModal(message, btnMessage, url){
+  popupNotification.style.display = "block"
+  modalMessage.innerHTML = message
+  modalContentBtn.textContent = btnMessage
+  modalContentBtn.href = url
+}
+
 function closeModal() {
   loginModal.style.display = "none"
   registerModal.style.display = "none"
+  popupNotification.style.display = "none"
 }
 
+// -------------- User data validation ------------
+
+function userDataValidation(name, email, password){
+  const name_regex = /^.{1,10}$/
+  const email_regex = /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/
+  const password_regex = /^[a-zA-Z0-9]{8,16}$/
+  
+  if (!name_regex.test(name)) {
+    return "invalid name"
+  } else if (!email_regex.test(email)) {
+    return "invalid email"
+  } else if (!password_regex.test(password)) {
+    return "invalid password"
+  } else {
+    return "valid"
+  }
+}
 
 // ---------------  Register ---------------------- 
 
@@ -54,11 +84,28 @@ const registerModalStatus = document.querySelector("#register-modal-status")
 
 registerBtn.addEventListener("click", () => {
   const url = "/api/user"
-  const inputRegisterNameValue = inputRegisterName.value
-  const inputRegisterEmailValue = inputRegisterEmail.value
-  const inputRegisterPasswordValue = inputRegisterPassword.value
+  const inputRegisterNameValue = inputRegisterName.value.trim()
+  const inputRegisterEmailValue = inputRegisterEmail.value.trim()
+  const inputRegisterPasswordValue = inputRegisterPassword.value.trim()
+  const registerValidationResult = userDataValidation(inputRegisterNameValue, inputRegisterEmailValue, inputRegisterPasswordValue)
 
-  register()
+  // register validation
+  if (!inputRegisterNameValue || !inputRegisterEmailValue || !inputRegisterPasswordValue){
+    registerModalStatus.innerHTML = `
+      <div class="status-description">請不要有空白</div>`
+  } else if (registerValidationResult === "invalid name") {
+    registerModalStatus.innerHTML = `
+      <div class="status-description">姓名請輸入1~10個字元</div>`
+  } else if (registerValidationResult === "invalid email") {
+    registerModalStatus.innerHTML = `
+      <div class="status-description">電子郵件不符合格式</div>`
+  } else if (registerValidationResult === "invalid password") {
+    registerModalStatus.innerHTML = `
+      <div class="status-description">密碼請輸入8至16個字母或數字</div>`
+  } else {
+    register()
+  }
+
   async function register() {
     const response = await fetch(url, {
       method: "POST",
@@ -69,15 +116,13 @@ registerBtn.addEventListener("click", () => {
         password: inputRegisterPasswordValue
       })
     })
+    
     const jsonData = await response.json()
 
-    if (jsonData["message"] === "email already exists"){
+    if (jsonData.message === "email already exists"){
       registerModalStatus.innerHTML = `
       <div class="status-description">電子信箱已註冊</div>`
-    } else if (jsonData["message"] === "empty input"){
-      registerModalStatus.innerHTML = `
-      <div class="status-description">請勿輸入空白</div>`
-    } else if(jsonData["ok"] === true){
+    } else if(jsonData.ok === true){
       registerModalStatus.innerHTML = `
       <div class="status-description">註冊成功</div>`
       registerModalFooter.innerHTML = "點此登入"
@@ -99,13 +144,19 @@ const inputLoginPassword = document.querySelector("#input-login-password")
 const loginModalStatus = document.querySelector("#login-modal-status")
 
 loginBtn.addEventListener("click", () => {
-  const url = "/api/user/auth"
   const inputLoginEmailValue = inputLoginEmail.value
   const inputLoginPasswordValue = inputLoginPassword.value
 
-  login()
+  if (!inputLoginEmailValue || !inputLoginPasswordValue) {
+    loginModalStatus.innerHTML = `
+      <div class="status-description">請不要空白</div>`
+  } else {
+    login()
+  }
+  
+  
   async function login() {
-    const response = await fetch(url, {
+    const response = await fetch("/api/user/auth", {
       method: "PUT",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
@@ -115,18 +166,13 @@ loginBtn.addEventListener("click", () => {
     })
 
     const jsonData = await response.json()
-    if (jsonData["ok"]) {
+    if (jsonData.ok) {
      window.location = window.location.href
-    } else if (jsonData["message"] === "empty input"){
-      loginModalStatus.innerHTML = `
-      <div class="status-description">請勿輸入空白</div>`
     } else {
       loginModalStatus.innerHTML = `
       <div class="status-description">電子郵件或密碼輸入錯誤</div>`
     }
   }
-
-  inputLoginEmail.value = ""
   inputLoginPassword.value= ""
 })
 
@@ -134,24 +180,25 @@ loginBtn.addEventListener("click", () => {
 // ----------- Load and check login status---------
 
 const navLoginLogoutBtn = document.querySelector(".nav-login-logout-btn")
+let isLoggedIn = false
 
-window.addEventListener("DOMContentLoaded", () => {
-  const url = "/api/user/auth"
+window.addEventListener("DOMContentLoaded", checkLoginStatus)
 
-  checkLoginStatus()
-  async function checkLoginStatus() {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {"Content-Type": "application/json"}
-    })
-    const jsonData = await response.json()
-    if(jsonData["data"] !== null){
-      navLoginRegisterBtn.style.display="none"
-      logoutBtn.style.display="block"
-    } 
+async function checkLoginStatus() {
+  const response = await fetch("/api/user/auth", {
+    method: "GET",
+    headers: {"Content-Type": "application/json"}
+  })
+  const jsonData = await response.json()
+
+  if(jsonData.data){
+    navLoginRegisterBtn.style.display="none"
+    logoutBtn.style.display="block"
+    isLoggedIn = true
+  } else {
+    isLoggedIn = false
   }
-})
-
+}
 
 // ------------------ Logout ---------------------
 
@@ -170,5 +217,16 @@ logoutBtn.addEventListener("click", (event) => {
     const jsonData = await response.json()
     window.location = window.location.href
   }
+})
 
+// ---------------- Itinerary booking--------------
+const bookingCartBtn = document.querySelector(".booking-cart-btn")
+
+bookingCartBtn.addEventListener("click", () => {
+  checkLoginStatus()
+  if (isLoggedIn){
+      window.location = "/booking"
+  } else {
+    openLoginModal()
+  }
 })

@@ -193,19 +193,6 @@ main {
   bottom: 0;
 }
 
-
-/* footer */
-footer {
-  background: #757575;
-  color: #FFFFFF;
-  height: 104px;
-  line-height: 104px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-
 /* RWD */
 @media screen and (max-width: 1200px){
 

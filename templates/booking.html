@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+
+  {% block style %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css')}}">
+  {% endblock %}
+
+  {% block title %}
+  <title>預定行程 - 台北一日遊</title>
+  {% endblock %}
+
+  {% block content %}
+  <main>
+    <div class="greeting">您好，<span class="greeting-username"></span>，待預訂的行程如下：</div>
+    <div class="no-itinerary">目前沒有任何待預訂的行程</div>
+
+    <div class="booking-container">
+      
+      <!-- booking items -->
+      <div class="itinerary-items">
+        <!-- <div class="itinerary-item">
+          <img src="/static/images/Picture.png">
+          <div class="itinerary-details">
+            <div class="booking-attraction-title">台北一日遊：平安鐘</div>
+            <div><b>日期：</b>2022-12-07</div>
+            <div><b>時間：</b>早上 9 點到下午 4 點</div>
+            <div><b>費用：</b>新台幣2000</div>
+            <div><b>地點：</b>臺北市 大安區忠孝東路4段</div>
+          </div>
+          <div class="delete-icon-container"><img src="/static/images/icon_delete.png" alt="" class="delete-icon"></div>
+        </div> -->
+      </div>
+
+      <div class="booking-contact-info-container">
+        <div class="contact-info-title">您的聯絡資訊</div>
+        <div>聯絡姓名：<input type="text"></div>
+        <div>聯絡信箱：<input type="email"></div>
+        <div>手機號碼：<input type="text"></div>
+        <div><b>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</b></div>
+      </div>
+
+      <div class="card-info-container">
+        <div class="card-info-title">信用卡付款資訊</div>
+        <div>卡片號碼：<input type="text" placeholder="**** **** **** ****"></div>
+        <div>過期時間：<input type="text" placeholder="MM/YY"></div>
+        <div>驗證密碼：<input type="text" placeholder="CVV"></div>
+      </div>
+
+      <div class="checkout">
+        <div class="total-amount"></div>
+        <button class="order-confirm-btn">確認訂購並付款</button>
+      </div>
+
+    </div>
+
+  </main>
+  {% endblock %}
+
+  {% block script %}
+  <script src="{{ url_for('static', filename='javascript/booking.js')}}"></script>
+  {% endblock %}

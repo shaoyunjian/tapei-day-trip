@@ -17,6 +17,41 @@ user = Blueprint(
 
 cnxpool = connector.connect()
 
+
+#----------- User data validation --------------
+import re
+
+def user_data_validate(name, email, password):
+  name_regex = r"^.{1,10}$"
+  email_regex = r"[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}"
+  password_regex = r"^[a-zA-Z0-9]{8,16}$"
+  
+  name_match = re.match(name_regex, name)
+  email_match = re.match(email_regex, email)
+  password_match = re.match(password_regex, password)
+    
+  if not name_match:
+    return {
+      "error": True, 
+      "message": "invalid name"
+    }
+  elif not email_match:
+    return {
+      "error": True, 
+      "message": "invalid email"
+    }
+  elif not password_match:
+    return {
+      "error": True, 
+      "message": "invalid password"
+    }
+
+  return {
+    "response": "ok", 
+    "message": "valid data"
+  }
+
+
 # ----------------- Register ---------------------
 
 @user.route("/api/user", methods=["POST"])
@@ -39,11 +74,15 @@ def register():
     cursor.execute(sql, values)
     emailData = cursor.fetchone()
 
-    if not input_name or not input_email or not input_password:
-      return {
-        "error": True,
-        "message": "empty input"
-      }, 400
+    # register validation
+    register_validation_result = user_data_validate(input_name, input_email, input_password)
+    
+    if register_validation_result["message"] == "invalid name":
+      return register_validation_result, 400
+    elif register_validation_result["message"] == "invalid email":
+      return register_validation_result, 400
+    elif register_validation_result["message"] == "invalid password":
+      return register_validation_result, 400
     elif not emailData:
       hashed_password = bcrypt.generate_password_hash(input_password)
       sql = """
@@ -76,15 +115,20 @@ def register():
 @user.route("/api/user/auth", methods=["GET"])
 def logged_in_user_info():
   try:
-    cookieExist = request.cookies
-    if cookieExist:
-      encoded_jwt= request.cookies.get("token")
+    encoded_jwt= request.cookies.get("token")
+    if encoded_jwt:
       decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
-      return decoded_jwt, 200
+      return {
+        "data": {
+          "id": decoded_jwt["id"],
+          "name": decoded_jwt["name"],
+          "email": decoded_jwt["email"]
+        }
+      }, 200
     else:
-      return {"data": None}
+      return {"data": None}, 200
   except jwt.exceptions.InvalidTokenError:
-    return {"data": None}
+    return {"data": None}, 401
 
 
 # ---------------- Login ---------------------
@@ -108,13 +152,12 @@ def login():
     cursor.execute(sql, values)
     userData = cursor.fetchone()
 
-    if not input_email or not input_email:
+    if not input_email or not input_password:
       return {
         "error": True,
         "message": "empty input"
       }, 400
-    
-    if userData:
+    elif userData:
       if bcrypt.check_password_hash(userData[3], input_password):
         payload = {
         "id": userData[0],
@@ -127,19 +170,14 @@ def login():
         return response, 200
       else:
         return {
-        "error": True,
-        "message": "email or password is incorrect"
-      }, 400
-    else:
-        return {
-        "error": True,
-        "message": "email or password is incorrect"
-      }, 400
+          "error": True,
+          "message": "email or password is incorrect"
+        }, 400
   except:
     return {
       "error": True,
       "message": "error"
-    }
+    }, 500
   finally:
     cursor.close()
     connection.close()

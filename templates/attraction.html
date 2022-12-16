@@ -4,6 +4,10 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/attraction.css')}}">
   {% endblock %}
 
+  {% block title %}
+  <title></title>
+  {% endblock %}
+
   {% block content %}
   <main>
     <div class="main-container">
@@ -31,21 +35,21 @@
           <form action="" class="booking">
             <div><b>訂購導覽行程</b></div>
             <div>以此景點為中心的一日行程，帶您探索城市角落故事</div>
-            <div><b>選擇日期： </b><input type="date" value="yyyy-mm-dd"></div>
+            <div><b>選擇日期： </b><input id="itinerary-date" type="date" value="yyyy-mm-dd"></div>
             <div><b>選擇時間：</b>
               <label class="radio-container">
-                <input type="radio" id="itinerary-morning" name="itinerary" checked>
+                <input type="radio" id="itinerary-morning" name="itinerary" value="morning" checked>
                 <span class="new-radio-btn"></span>
                 上半天
               </label>
               <label class="radio-container itinerary-afternoon">
-                <input type="radio" id="itinerary-afternoon" name="itinerary">
+                <input type="radio" id="itinerary-afternoon" name="itinerary" value="afternoon">
                 <span class="new-radio-btn"></span>
                 下半天
               </label>
             </div>
             <div><b>導覽費用：</b><span class="price">新台幣 2000 元</span></div>
-            <button id="booking-btn">開始預約行程</button>
+            <button id="start-booking-btn">開始預約行程</button>
           </form>
         </div>
       </div>

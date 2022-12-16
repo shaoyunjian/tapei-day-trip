@@ -14,8 +14,8 @@ cnxpool = connector.connect()
 @category.route("/api/categories") 
 def api_categories():
 	try:
-		cnx = cnxpool.get_connection()
-		cursor = cnx.cursor()
+		connection = cnxpool.get_connection()
+		cursor = connection.cursor()
 		sql = """
 			SELECT DISTINCT `category` 
 			FROM `attraction_info`;
@@ -24,7 +24,7 @@ def api_categories():
 		database= cursor.fetchall()
 		categories = []
 		for category in database:
-			categories.append(str(category).replace("('", "").replace("',)", "").replace("\\u3000", "　"))
+			categories.append(category[0])
 		return {"data": categories}, 200
 	except:
 		return {
@@ -32,4 +32,4 @@ def api_categories():
 			"message": "Error"}, 500
 	finally:
 		cursor.close()
-		cnx.close()
+		connection.close()
