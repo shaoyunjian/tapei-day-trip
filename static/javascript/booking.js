@@ -93,13 +93,15 @@ function deleteItineraryItem(){
   for (let deleteBtn of deleteBtns){
     deleteBtn.addEventListener("click", (event)=> {
       const bookingId = event.target.dataset.id
-
+      checkLoginStatus()
+      
       fetchDeleteBookingAPI(bookingId)
       async function fetchDeleteBookingAPI(id){
         const response = await fetch("/api/booking", {
           method: "DELETE",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
+            user_email: userEmail,
             booking_id: id
           })
         })

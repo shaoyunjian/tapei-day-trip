@@ -181,6 +181,7 @@ loginBtn.addEventListener("click", () => {
 
 const navLoginLogoutBtn = document.querySelector(".nav-login-logout-btn")
 let isLoggedIn = false
+let userEmail = ""
 
 window.addEventListener("DOMContentLoaded", checkLoginStatus)
 
@@ -195,6 +196,7 @@ async function checkLoginStatus() {
     navLoginRegisterBtn.style.display="none"
     logoutBtn.style.display="block"
     isLoggedIn = true
+    userEmail = jsonData.data.email
   } else {
     isLoggedIn = false
   }

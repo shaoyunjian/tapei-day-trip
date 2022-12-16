@@ -20,14 +20,13 @@ cnxpool = connector.connect()
 
 @booking.route("/api/booking", methods=["GET"])
 def check_itinerary():
-  encoded_jwt= request.cookies.get("token")
-
   try:
     connection = cnxpool.get_connection()
     cursor = connection.cursor()
 
-    if encoded_jwt: 
-      decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    encoded_jwt= request.cookies.get("token")
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    if decoded_jwt: 
       user_email = decoded_jwt["email"]
 
       sql = """
@@ -109,8 +108,8 @@ def add_itinerary():
     image = imageData[0]
 
     encoded_jwt= request.cookies.get("token")
-    if encoded_jwt:
-      decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    if decoded_jwt:
       user_email = decoded_jwt["email"]
       sql = """
         SELECT 
@@ -169,14 +168,18 @@ def add_itinerary():
 
 @booking.route("/api/booking", methods=["DELETE"])
 def delete_itinerary():
-
   data = request.get_json()
   booking_id = data["booking_id"]
+  user_email = data["user_email"]
+  
   try:
     connection = cnxpool.get_connection()
     cursor = connection.cursor()
+
     encoded_jwt= request.cookies.get("token")
-    if encoded_jwt:
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+
+    if decoded_jwt["email"] == user_email:
       sql = """
         DELETE FROM `user_booking_list` 
         WHERE `id` = %s;
