@@ -1,5 +1,5 @@
 from flask import *
-import api.mysql_connector as connector
+from models.mysql_connector import pool
 
 attraction = Blueprint(
 	"attraction", 
@@ -7,14 +7,13 @@ attraction = Blueprint(
 	static_folder="static", 
 	template_folder="templates")
 
-cnxpool = connector.connect()
 
 # -----------------------------------------------------
 
 @attraction.route("/api/attractions")
 def api_attractions():
 	try:
-		connection = cnxpool.get_connection()
+		connection = pool.get_connection()
 		cursor = connection.cursor()
 		keyword = request.args.get("keyword")
 		page = request.args.get("page", type=int)
@@ -103,7 +102,7 @@ def api_attraction_id(attractionId):
 		}, 400
 
 	try:
-		connection = cnxpool.get_connection()
+		connection = pool.get_connection()
 		cursor = connection.cursor()
 		sql = """
 			SELECT 

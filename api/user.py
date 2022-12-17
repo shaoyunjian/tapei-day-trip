@@ -1,21 +1,18 @@
 from flask import *
-import api.mysql_connector as connector
+from models.mysql_connector import pool
 from dotenv import load_dotenv
 import os
 import jwt
 from flask_bcrypt import Bcrypt
 load_dotenv() 
 bcrypt = Bcrypt()
-JWT_KEY =os.getenv("JWT_KEY")
-jwt_key = JWT_KEY
+jwt_key =os.getenv("JWT_KEY")
 
 user = Blueprint(
   "user", 
   __name__, 
   static_folder="static", 
   template_folder="templates")
-
-cnxpool = connector.connect()
 
 
 #----------- User data validation --------------
@@ -57,7 +54,7 @@ def user_data_validate(name, email, password):
 @user.route("/api/user", methods=["POST"])
 def register():
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
 
     data = request.get_json()
@@ -136,7 +133,7 @@ def logged_in_user_info():
 @user.route("/api/user/auth", methods=["PUT"])
 def login():
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
 
     data = request.get_json()

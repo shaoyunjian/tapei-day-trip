@@ -1,11 +1,10 @@
 from flask import *
-import api.mysql_connector as connector
-from dotenv import load_dotenv
+from models.mysql_connector import pool
 import os
-import jwt
+from dotenv import load_dotenv
 load_dotenv() 
-JWT_KEY =os.getenv("JWT_KEY")
-jwt_key = JWT_KEY
+import jwt
+jwt_key =os.getenv("JWT_KEY")
 
 booking = Blueprint(
   "booking", 
@@ -13,15 +12,13 @@ booking = Blueprint(
   static_folder="static", 
   template_folder="templates")
 
-cnxpool = connector.connect()
-
 
 #------------- Check itinerary/booking cart -------------
 
 @booking.route("/api/booking", methods=["GET"])
 def check_itinerary():
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
 
     encoded_jwt= request.cookies.get("token")
@@ -94,7 +91,7 @@ def add_itinerary():
   price = jsonData["itineraryPrice"]
 
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
     sql = """ 
       SELECT `url` 
@@ -173,7 +170,7 @@ def delete_itinerary():
   user_email = data["user_email"]
   
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
 
     encoded_jwt= request.cookies.get("token")
