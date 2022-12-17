@@ -3,14 +3,16 @@ import json
 from dotenv import load_dotenv
 import os
 load_dotenv() 
-USER=os.getenv("USER")
-PASSWORD=os.getenv("PASSWORD")
+mysql_username = os.getenv("MYSQL_USERNAME")
+mysql_password = os.getenv("MYSQL_PASSWORD")
 
 connection = mysql.connector.connect(
   host = "localhost",
   port = "3306",
-  user = USER,
-  password = PASSWORD)
+  user= mysql_username,
+  password= mysql_password
+)
+
 cursor = connection.cursor()
 
 # cursor.execute("CREATE DATABASE `taipei_day_trip_db`")
