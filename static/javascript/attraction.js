@@ -63,6 +63,8 @@ async function fetchAttractionId(){
   // ------ Slideshow: left arrow ------ 
 
   leftArrow.addEventListener("click", ()=>{ 
+    if(imageNumber === 1) return
+
     currentIndex -= 1
     if(currentIndex < 0){currentIndex = imageNumber - 1} 
     
@@ -82,6 +84,8 @@ async function fetchAttractionId(){
   // ------ Slideshow: right arrow ------ 
   
   rightArrow.addEventListener("click", ()=>{
+    if(imageNumber === 1) return
+
     currentIndex += 1
     if(currentIndex + 1 > imageNumber){currentIndex = 0} 
     slideImageContainer.innerHTML =`
