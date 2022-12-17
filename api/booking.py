@@ -167,16 +167,24 @@ def add_itinerary():
 def delete_itinerary():
   data = request.get_json()
   booking_id = data["booking_id"]
-  user_email = data["user_email"]
   
   try:
     connection = pool.get_connection()
     cursor = connection.cursor()
 
+    sql = """ 
+      SELECT user_email 
+      FROM `user_booking_list` 
+      WHERE `id` = %s;
+    """
+    value = (booking_id, )
+    cursor.execute(sql, value)
+    db_current_user_email = cursor.fetchone()
+
     encoded_jwt= request.cookies.get("token")
     decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
 
-    if decoded_jwt["email"] == user_email:
+    if decoded_jwt["email"] == db_current_user_email[0]:
       sql = """
         DELETE FROM `user_booking_list` 
         WHERE `id` = %s;

@@ -101,7 +101,6 @@ function deleteItineraryItem(){
           method: "DELETE",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
-            user_email: userEmail,
             booking_id: id
           })
         })
