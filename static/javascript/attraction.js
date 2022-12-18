@@ -179,3 +179,11 @@ startBookingBtn.addEventListener("click", (event) => {
     }
   }
 })
+
+// ----- Disable the selection of dates before tomorrow -------
+
+const today = new Date()
+const tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+let datePicker = document.querySelector("#date-picker")
+
+datePicker.min = tomorrow.toISOString().split("T")[0]
