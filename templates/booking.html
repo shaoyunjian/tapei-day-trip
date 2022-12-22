@@ -32,22 +32,40 @@
 
       <div class="booking-contact-info-container">
         <div class="contact-info-title">您的聯絡資訊</div>
-        <div>聯絡姓名：<input type="text"></div>
-        <div>聯絡信箱：<input type="email"></div>
-        <div>手機號碼：<input type="text"></div>
+        <div>聯絡姓名：
+          <input type="text" id="input-name">
+          <span class="input-message" id="input-name-message"></span>
+        </div>
+        <div>聯絡信箱：
+          <input type="email" id="input-email">
+          <span class="input-message" id="input-email-message"></span>
+        </div>
+        <div>手機號碼：
+          <input type="text" id="input-phone">
+          <span class="input-message" id="input-phone-message"></span>
+        </div>
         <div><b>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</b></div>
       </div>
 
       <div class="card-info-container">
         <div class="card-info-title">信用卡付款資訊</div>
-        <div>卡片號碼：<input type="text" placeholder="**** **** **** ****"></div>
-        <div>過期時間：<input type="text" placeholder="MM/YY"></div>
-        <div>驗證密碼：<input type="text" placeholder="CVV"></div>
+        <div class="card-info">
+          <div>卡片號碼：</div>
+          <div class="tpfield" id="card-number"></div>
+        </div>
+        <div class="card-info">
+          <div>到期年月：</div>
+          <div class="tpfield" id="card-expiration-date"></div>
+        </div>
+        <div class="card-info">
+          <div>驗證密碼：</div>
+          <div class="tpfield" id="card-ccv"></div>
+        </div>
       </div>
 
       <div class="checkout">
         <div class="total-amount"></div>
-        <button class="order-confirm-btn">確認訂購並付款</button>
+        <button class="order-confirm-btn" id="submit-button" onclick>確認訂購並付款</button>
       </div>
 
     </div>
@@ -56,5 +74,6 @@
   {% endblock %}
 
   {% block script %}
+  <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
   <script src="{{ url_for('static', filename='javascript/booking.js')}}"></script>
   {% endblock %}
