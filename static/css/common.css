@@ -136,10 +136,6 @@ header {
   height: auto;
 }
 
-.modal-content-detail > div {
-  margin-bottom: 10px;
-}
-
 #register-modal-status,
 #login-modal-status {
   margin: 0px;
@@ -193,7 +189,7 @@ header {
   height: 40px;
   line-height: 40px;
   border-radius: 5px;
-  margin: 30px auto -30px auto;
+  margin: 30px auto -20px auto;
 }
 
 .modal-content-btn:hover,

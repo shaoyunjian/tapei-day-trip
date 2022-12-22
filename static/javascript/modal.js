@@ -43,11 +43,11 @@ function openRegisterModal() {
   registerModal.style.display = "block"
 }
 
-function openMessageModal(message, btnMessage, url){
+function openMessageModal(message, btnMessage){
   popupNotification.style.display = "block"
   modalMessage.innerHTML = message
   modalContentBtn.textContent = btnMessage
-  modalContentBtn.href = url
+  modalContentBtn.addEventListener("click", closeModal)
 }
 
 function closeModal() {
