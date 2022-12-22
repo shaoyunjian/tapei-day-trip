@@ -84,11 +84,11 @@ def check_itinerary():
 
 @booking.route("/api/booking", methods=["POST"])
 def add_itinerary():
-  jsonData = request.get_json()
-  attraction_id = jsonData["attractionId"]
-  date = jsonData["itineraryDate"]
-  time = jsonData["itineraryTime"]
-  price = jsonData["itineraryPrice"]
+  data = request.get_json()
+  attraction_id = data["attractionId"]
+  date = data["itineraryDate"]
+  time = data["itineraryTime"]
+  price = data["itineraryPrice"]
 
   try:
     connection = pool.get_connection()
