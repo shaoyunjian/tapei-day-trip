@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/thankyou.css')}}">
+{% endblock %}
+
+{% block title %}
+<title>預定完成</title>
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="main-container">
+    <div class="order-success-title">【 行程預定成功 】</div>
+    <div>您的訂單編號如下：</div>
+    <div class="order-number"></div>
+    <br>
+    <div>感謝您的訂購，祝您旅途愉快</div>
+  </div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='javascript/thankyou.js')}}"></script>
+{% endblock %}
