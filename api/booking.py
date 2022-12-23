@@ -1,11 +1,10 @@
 from flask import *
-import api.mysql_connector as connector
-from dotenv import load_dotenv
+from models.mysql_connector import pool
 import os
-import jwt
+from dotenv import load_dotenv
 load_dotenv() 
-JWT_KEY =os.getenv("JWT_KEY")
-jwt_key = JWT_KEY
+import jwt
+jwt_key =os.getenv("JWT_KEY")
 
 booking = Blueprint(
   "booking", 
@@ -13,21 +12,18 @@ booking = Blueprint(
   static_folder="static", 
   template_folder="templates")
 
-cnxpool = connector.connect()
-
 
 #------------- Check itinerary/booking cart -------------
 
 @booking.route("/api/booking", methods=["GET"])
 def check_itinerary():
-  encoded_jwt= request.cookies.get("token")
-
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
 
-    if encoded_jwt: 
-      decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    encoded_jwt= request.cookies.get("token")
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    if decoded_jwt: 
       user_email = decoded_jwt["email"]
 
       sql = """
@@ -88,14 +84,14 @@ def check_itinerary():
 
 @booking.route("/api/booking", methods=["POST"])
 def add_itinerary():
-  jsonData = request.get_json()
-  attraction_id = jsonData["attractionId"]
-  date = jsonData["itineraryDate"]
-  time = jsonData["itineraryTime"]
-  price = jsonData["itineraryPrice"]
+  data = request.get_json()
+  attraction_id = data["attractionId"]
+  date = data["itineraryDate"]
+  time = data["itineraryTime"]
+  price = data["itineraryPrice"]
 
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
     sql = """ 
       SELECT `url` 
@@ -109,8 +105,8 @@ def add_itinerary():
     image = imageData[0]
 
     encoded_jwt= request.cookies.get("token")
-    if encoded_jwt:
-      decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    if decoded_jwt:
       user_email = decoded_jwt["email"]
       sql = """
         SELECT 
@@ -169,14 +165,26 @@ def add_itinerary():
 
 @booking.route("/api/booking", methods=["DELETE"])
 def delete_itinerary():
-
   data = request.get_json()
   booking_id = data["booking_id"]
+  
   try:
-    connection = cnxpool.get_connection()
+    connection = pool.get_connection()
     cursor = connection.cursor()
+
+    sql = """ 
+      SELECT user_email 
+      FROM `user_booking_list` 
+      WHERE `id` = %s;
+    """
+    value = (booking_id, )
+    cursor.execute(sql, value)
+    db_current_user_email = cursor.fetchone()
+
     encoded_jwt= request.cookies.get("token")
-    if encoded_jwt:
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+
+    if decoded_jwt["email"] == db_current_user_email[0]:
       sql = """
         DELETE FROM `user_booking_list` 
         WHERE `id` = %s;

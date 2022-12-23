@@ -43,11 +43,11 @@ function openRegisterModal() {
   registerModal.style.display = "block"
 }
 
-function openMessageModal(message, btnMessage, url){
+function openMessageModal(message, btnMessage){
   popupNotification.style.display = "block"
   modalMessage.innerHTML = message
   modalContentBtn.textContent = btnMessage
-  modalContentBtn.href = url
+  modalContentBtn.addEventListener("click", closeModal)
 }
 
 function closeModal() {
@@ -181,6 +181,7 @@ loginBtn.addEventListener("click", () => {
 
 const navLoginLogoutBtn = document.querySelector(".nav-login-logout-btn")
 let isLoggedIn = false
+let userEmail = ""
 
 window.addEventListener("DOMContentLoaded", checkLoginStatus)
 
@@ -195,6 +196,7 @@ async function checkLoginStatus() {
     navLoginRegisterBtn.style.display="none"
     logoutBtn.style.display="block"
     isLoggedIn = true
+    userEmail = jsonData.data.email
   } else {
     isLoggedIn = false
   }

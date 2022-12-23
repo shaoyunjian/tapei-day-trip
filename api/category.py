@@ -1,5 +1,5 @@
 from flask import *
-import api.mysql_connector as connector
+from models.mysql_connector import pool
 
 category = Blueprint(
 	"category", 
@@ -7,14 +7,13 @@ category = Blueprint(
 	static_folder="static", 
 	template_folder="templates")
 
-cnxpool = connector.connect()
 
 # -----------------------------------------------------
 
 @category.route("/api/categories") 
 def api_categories():
 	try:
-		connection = cnxpool.get_connection()
+		connection = pool.get_connection()
 		cursor = connection.cursor()
 		sql = """
 			SELECT DISTINCT `category` 
