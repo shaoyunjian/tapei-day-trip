@@ -58,21 +58,32 @@ function closeModal() {
 
 // -------------- User data validation ------------
 
-function userDataValidation(name, email, password){
+function userDataValidation(name=null, email, password){
   const name_regex = /^.{1,10}$/
   const email_regex = /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/
   const password_regex = /^[a-zA-Z0-9]{8,16}$/
   
-  if (!name_regex.test(name)) {
-    return "invalid name"
-  } else if (!email_regex.test(email)) {
-    return "invalid email"
-  } else if (!password_regex.test(password)) {
-    return "invalid password"
+  if (name){
+    if (!name_regex.test(name)) {
+      return "invalid name"
+    } else if (!email_regex.test(email)) {
+      return "invalid email"
+    } else if (!password_regex.test(password)) {
+      return "invalid password"
+    } else {
+      return "valid"
+    }
   } else {
-    return "valid"
+    if (!email_regex.test(email)) {
+      return "invalid email"
+    } else if (!password_regex.test(password)) {
+      return "invalid password"
+    } else {
+      return "valid"
+    }
   }
 }
+
 
 // ---------------  Register ---------------------- 
 
@@ -146,10 +157,17 @@ const loginModalStatus = document.querySelector("#login-modal-status")
 loginBtn.addEventListener("click", () => {
   const inputLoginEmailValue = inputLoginEmail.value
   const inputLoginPasswordValue = inputLoginPassword.value
+  const loginValidationResult = userDataValidation(null, inputLoginEmailValue, inputLoginPasswordValue)
 
   if (!inputLoginEmailValue || !inputLoginPasswordValue) {
     loginModalStatus.innerHTML = `
       <div class="status-description">請不要空白</div>`
+  } else if (loginValidationResult === "invalid email") {
+    loginModalStatus.innerHTML = `
+      <div class="status-description">電子郵件不符合格式</div>`
+  } else if (loginValidationResult === "invalid password") {
+    loginModalStatus.innerHTML = `
+      <div class="status-description">密碼請輸入8至16個字母或數字</div>`
   } else {
     login()
   }
@@ -173,7 +191,6 @@ loginBtn.addEventListener("click", () => {
       <div class="status-description">電子郵件或密碼輸入錯誤</div>`
     }
   }
-  inputLoginPassword.value= ""
 })
 
 
