@@ -1,14 +1,8 @@
 from flask import *
-import requests, os
+import requests, jwt
+from models.order import Order
 from datetime import datetime, timezone, timedelta
-
-from models.mysql_connector import pool
-from dotenv import load_dotenv
-load_dotenv() 
-import jwt
-jwt_key = os.getenv("JWT_KEY")
-partner_key = os.getenv("PARTNER_KEY")
-merchant_id = os.getenv("MERCHANT_ID")
+from routes import jwt_key, partner_key, merchant_id 
 
 order = Blueprint(
   "order", 
@@ -41,21 +35,11 @@ def create_order():
       }, 403
     
     decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    user_email = decoded_jwt["email"]
     
     # ------------ database ---------------
 
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-
-    booking_cart_sql = """
-      SELECT * 
-      FROM `user_booking_list` 
-      WHERE user_email = %s;
-    """
-    booking_cart_values = (decoded_jwt["email"], )
-    
-    cursor.execute(booking_cart_sql, booking_cart_values)
-    booking_cart_data = cursor.fetchall()
+    booking_cart_data = Order.select_data_from_booking_list(user_email)
     booking_total_amount = 0
     for item in booking_cart_data:
       booking_total_amount += item[6]
@@ -104,22 +88,9 @@ def create_order():
       order_status = "paid"
 
       # add order to database
-      orders_sql = """
-        INSERT INTO 
-        `orders`(
-          `order_number`, 
-          `user_email`, 
-          `prime`, 
-          `total_price`, 
-          `contact_name`, 
-          `contact_email`, 
-          `contact_phone`) 
-        VALUES(%s, %s, %s, %s, %s, %s, %s);
-      """
-      values = (order_number, decoded_jwt["email"], data["prime"], data["order"]["totalAmount"], data["order"]["contact"]["name"], data["order"]["contact"]["email"], data["order"]["contact"]["phone"])
+      value = (order_number, decoded_jwt["email"], data["prime"], data["order"]["totalAmount"], data["order"]["contact"]["name"], data["order"]["contact"]["email"], data["order"]["contact"]["phone"])
       
-      cursor.execute(orders_sql, values)
-      connection.commit()
+      Order.insert_data_into_orders(value)
 
       for item in booking_cart_data:
         booking_attraction_id = item[2]
@@ -130,30 +101,12 @@ def create_order():
         booking_total_amount += item[6]
 
         # add data to table `order_itinerary_detail`
-        order_details_sql = """
-          INSERT INTO 
-          `order_itinerary_detail`(
-            `order_number`, 
-            `attraction_id`, 
-            `image`, 
-            `date`, 
-            `time`, 
-            `price`) 
-          VALUES(%s, %s , %s, %s , %s, %s);
-        """
         order_details_values = (order_number, booking_attraction_id, booking_attraction_image, booking_itinerary_date, booking_itinerary_time, booking_itinerary_price)
         
-        cursor.execute(order_details_sql, order_details_values)
-        connection.commit()
+        Order.insert_data_into_order_itinerary_detail(order_details_values)
 
       # delete data from cart
-      delete_sql = """
-        DELETE FROM `user_booking_list` 
-        WHERE `user_email` = %s;
-      """
-      delete_value = (decoded_jwt["email"],)
-      cursor.execute(delete_sql, delete_value)
-      connection.commit()
+      Order.delete_booking_list_by_email(user_email)
 
       return {
         "data": {
@@ -184,19 +137,12 @@ def create_order():
     "error": True,
     "message": "error"
     }, 500
-  finally:
-    cursor.close()
-    connection.close()
-
 
 #---------------- get order number ---------------------
 
 @order.route("/api/order/<order_number>", methods=["GET"])
 def get_order_number(order_number):
   try:
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-    
     encoded_jwt= request.cookies.get("token")
     if not encoded_jwt:
       return {
@@ -207,32 +153,7 @@ def get_order_number(order_number):
     decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
     user_email = decoded_jwt["email"]
 
-    sql = """
-      SELECT 
-        `orders`.`user_email`, 
-        `orders`.`total_price`,  
-        `orders`.`contact_name`, 
-        `orders`.`contact_email`, 
-        `orders`.`contact_phone`, 
-        `order_itinerary_detail`.`attraction_id`, 
-        `attraction_info`.`name`, 
-        `attraction_info`.`address`, 
-        `order_itinerary_detail`.`image`,  
-        `order_itinerary_detail`.`date`,  
-        `order_itinerary_detail`.`time`,  
-        `order_itinerary_detail`.`price`
-      FROM (`orders` 
-        INNER JOIN `order_itinerary_detail` 
-        ON `orders`.`order_number` = `order_itinerary_detail`.`order_number`
-        )
-      INNER JOIN `attraction_info` 
-      ON `order_itinerary_detail`.`attraction_id`=`attraction_info`.`id`
-      WHERE `orders`.`order_number`= %s;
-    """
-
-    value = (order_number,)
-    cursor.execute(sql, value)
-    order_data = cursor.fetchall()
+    order_data = Order.search_order_number(order_number)
 
     if not order_data:
       return {"data": None}, 200
@@ -288,6 +209,3 @@ def get_order_number(order_number):
     "error": True,
     "message": "error"
     }, 500
-  finally:
-    cursor.close()
-    connection.close()
