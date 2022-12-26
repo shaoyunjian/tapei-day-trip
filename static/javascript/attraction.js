@@ -9,6 +9,7 @@ const categoryMrt = document.querySelector(".category-mrt")
 const attractionIntro = document.querySelector(".attraction-intro")
 const addressDetail = document.querySelector(".address-detail")
 const transportationDetail = document.querySelector(".transportation-detail")
+const mapContainer = document.querySelector(".map-container")
 const attractionImages = []
 
 attractionName.textContent = ""
@@ -32,6 +33,8 @@ async function fetchAttractionId(){
   const description = data.description
   const address = data.address
   const transport = data.transport
+  const lat = data.lat
+  const lng = data.lng
   const imageNumber = data.images.length
   const dots = document.querySelector(".dots")
 
@@ -42,7 +45,9 @@ async function fetchAttractionId(){
   attractionIntro.textContent = description
   addressDetail.textContent = address
   transportationDetail.textContent = transport
-  
+  mapContainer.innerHTML = `
+    <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" style="border-radius: 5px" class="google-map" src=https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${lat},${lng}&z=16&output=embed&t=></iframe>`
+
   // -------- Add dots and attraction images --------
 
   for(let i = 0; i< imageNumber; i++){

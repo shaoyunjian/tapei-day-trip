@@ -209,7 +209,8 @@ input[type=radio] {
   }
 
   .main-container {
-    width: 100%;
+    width: 95%;
+    margin-top: 80px;
   }
 
   .slide-and-booking-area {
@@ -218,7 +219,7 @@ input[type=radio] {
 
   .slideshow-container {
     width: 45%;
-    margin: 0 15px;
+    margin: 0 10px;
   }
 
   .slide-images {
@@ -335,5 +336,8 @@ input[type=radio] {
     width: 100%;
     padding: 0 10px 0 20px;
   }
-
+  
+  .google-map {
+    padding-right: 10px;
+  }
 }
