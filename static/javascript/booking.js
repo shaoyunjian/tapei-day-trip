@@ -1,4 +1,5 @@
 "use strict"
+const loader = document.querySelector(".loader")
 const bookingContainer = document.querySelector(".booking-container")
 const noItinerary = document.querySelector(".no-itinerary")
 const itineraryItems = document.querySelector(".itinerary-items")
@@ -16,6 +17,11 @@ document.addEventListener("DOMContentLoaded", ()=> {
     await checkLoginStatus() 
     if (isLoggedIn) {
       initialLoad()
+
+      window.addEventListener("load", ()=>{
+        loader.classList.add("display-none")
+      })
+
     } else {
       greeting.style.display = "none"
       bookingContainer.style.display = "none"
