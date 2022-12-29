@@ -2,8 +2,9 @@
 const url = window.location.href
 const attractionId = url.split("/")[4]
 const title = document.querySelector("title")
+const loadingArea = document.querySelector(".loading-area")
+const loadingPercentage = document.querySelector(".loading-percentage")
 const slideImageContainer = document.querySelector(".slide-image-container")
-const slideImages = document.querySelector(".slide-images")
 const attractionName = document.querySelector(".attraction-name")
 const categoryMrt = document.querySelector(".category-mrt")
 const attractionIntro = document.querySelector(".attraction-intro")
@@ -12,11 +13,6 @@ const transportationDetail = document.querySelector(".transportation-detail")
 const mapContainer = document.querySelector(".map-container")
 const attractionImages = []
 
-attractionName.textContent = ""
-categoryMrt.innerHTML = ""
-attractionIntro.textContent = ""
-addressDetail.textContent = ""
-transportationDetail.textContent = ""
 
 // ----------- Fetch attraction id ------------
 
@@ -26,7 +22,6 @@ async function fetchAttractionId(){
   const jsonData = await response.json()
 
   const data = jsonData.data
-  const images = data.images
   const name = data.name
   const category = data.category
   const mrt = data.mrt
@@ -38,8 +33,36 @@ async function fetchAttractionId(){
   const imageNumber = data.images.length
   const dots = document.querySelector(".dots")
 
+  // ----------------- image ------------------
+
+  const images = data.images
+  let imgLoadingNumber = 0
+
+  images.forEach((imgUrl)=>{
+    const image = document.createElement("img")
+    image.src = imgUrl
+    image.classList.add("slide-images")
+    image.classList.add("display-none")
+    image.onload = ()=> {
+      imgLoadingNumber++
+      if(imgLoadingNumber === slideImages.length){
+        loadingArea.classList.add("display-none")
+        console.log("123")
+      } else {
+        console.log(imgLoadingNumber)
+        loadingPercentage.textContent = `${(Math.round((imgLoadingNumber / slideImages.length) * 100 ))}%`
+      }
+    }
+    slideImageContainer.appendChild(image)
+  })
+  
+  const slideImages = document.querySelectorAll(".slide-images")
+  slideImages[0].classList.remove("display-none")
+  
+
+  // ------------------------------------------
+
   title.textContent = name + " - 台北一日遊"
-  slideImageContainer.innerHTML =`<img src="${images[0]}" alt="attraction-images" class="slide-images">`
   attractionName.textContent = name
   categoryMrt.innerHTML = `${category} at ${mrt}`
   attractionIntro.textContent = description
@@ -48,11 +71,11 @@ async function fetchAttractionId(){
   mapContainer.innerHTML = `
     <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" style="border-radius: 5px" class="google-map" src=https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${lat},${lng}&z=16&output=embed&t=></iframe>`
 
+  
   // -------- Add dots and attraction images --------
 
   for(let i = 0; i< imageNumber; i++){
     dots.innerHTML +=`<span class="dot" data-id="${i}"></span>`
-    attractionImages.push(images[i])
   }
 
   // ---------------- Slideshow ----------------
@@ -70,11 +93,10 @@ async function fetchAttractionId(){
   leftArrow.addEventListener("click", ()=>{ 
     if(imageNumber === 1) return
 
+    slideImages[currentIndex].classList.add("display-none")
     currentIndex -= 1
     if(currentIndex < 0){currentIndex = imageNumber - 1} 
-    
-    slideImageContainer.innerHTML =`
-      <img src="${attractionImages[currentIndex]}" alt="attraction-images" class="slide-images">`
+    slideImages[currentIndex].classList.remove("display-none")
 
     const activeItem = document.querySelector(".active")
     if(activeItem){activeItem.classList.remove("active")}
@@ -91,13 +113,13 @@ async function fetchAttractionId(){
   rightArrow.addEventListener("click", ()=>{
     if(imageNumber === 1) return
 
+    slideImages[currentIndex].classList.add("display-none")
     currentIndex += 1
-    if(currentIndex + 1 > imageNumber){currentIndex = 0} 
-    slideImageContainer.innerHTML =`
-      <img src="${attractionImages[currentIndex]}" alt="attraction-images" class="slide-images">`
+    if(currentIndex + 1 > imageNumber) {currentIndex = 0} 
+    slideImages[currentIndex].classList.remove("display-none")
 
     const activeItem = document.querySelector(".active")
-    if(activeItem){activeItem.classList.remove("active")}
+    if(activeItem) {activeItem.classList.remove("active")}
     
     classNameIsDot[currentIndex].className += " active"
     if(!currentIndex){
@@ -111,9 +133,9 @@ async function fetchAttractionId(){
   dots.addEventListener("click", (event)=>{
     for(let i = 0; i < imageNumber; i++){
       if(event.target.dataset.id === `${i}`){
+        slideImages[currentIndex].classList.add("display-none")
         currentIndex = i
-        slideImageContainer.innerHTML =`
-          <img src="${attractionImages[i]}" alt="attraction-images" class="slide-images">`
+        slideImages[currentIndex].classList.remove("display-none")
 
         const activeItem = document.querySelector(".active")
         if(activeItem){activeItem.classList.remove("active")}

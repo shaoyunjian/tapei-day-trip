@@ -17,6 +17,10 @@
 
         <!-- slideshow -->
         <div class="slideshow-container">
+          <div class="loading-area">
+            <div class="loading-percentage">0 %</div>
+            <div><img src="../static/images/spinner.gif" class="loading-spinner"></div>
+          </div>
           <div class="slide-image-container">
             <!-- <img src="../static/images/Picture.png" alt="attraction-images" class="slide-images"> -->
           </div>
@@ -29,8 +33,8 @@
 
         <!-- booking -area -->
         <div class="booking-area">
-          <div class="attraction-name">平安鐘</div>
-          <div class="category-mrt">公共藝術 at 忠孝復興</div>
+          <div class="attraction-name"></div>
+          <div class="category-mrt"></div>
           <!-- booking -->
           <form action="" class="booking">
             <div><b>訂購導覽行程</b></div>
@@ -57,18 +61,17 @@
       <div class="attraction-intro-container">
         <div class="attraction-intro">
          <!-- attraction introduction display -->
-      </div>
-      <div class="address-info">
-        <div class="address-title"><b>景點地址：</b></div>
-        <div class="address-detail">臺北市 大安區忠孝東路4段</div>
-      </div>
-      <div class="transportation-info">
-        <div class="transportation-title"><b>交通方式：</b></div>
-        <div class="transportation-detail">
-          <!-- transportation detail display -->
         </div>
+        <div class="address-info">
+          <div class="address-title"><b>景點地址：</b></div>
+          <div class="address-detail"></div>
+        </div>
+        <div class="transportation-info">
+          <div class="transportation-title"><b>交通方式：</b></div>
+          <div class="transportation-detail"></div>
+        </div>
+        <div class="map-container"></div>
       </div>
-      <div class="map-container"></div>
     </div>
   </main>
   {% endblock %}
