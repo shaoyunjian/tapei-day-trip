@@ -137,6 +137,12 @@ main {
   width: 1180px;
   height: auto;
   margin: -120px auto 40px auto;
+}
+
+.attraction-div {
+  width: auto;
+  height: auto;
+  margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

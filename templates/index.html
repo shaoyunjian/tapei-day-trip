@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='twicon/twicon.css')}}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css')}}">
   {% block style %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css')}}">
@@ -22,7 +23,7 @@
         <div class="booking-cart-btn">預定行程</div>
         <div class="nav-login-logout-btn">
           <div class="nav-login-register-btn">登入/註冊</div>
-          <div class="logout-btn">登出系統</div>
+          <div class="logout-btn">登出</div>
         </div>
         
       </div>
@@ -101,16 +102,20 @@
     </div>
 
     <div class="attraction-area">
-      <!-- 
-      <div class="attraction">
-        <img src="../static/images/Picture.png" alt="" class="attraction-img">
-        <div class="attraction-name">平安鐘</div>
-        <div class="attraction-info">
-          <div class="transportation">忠孝復興</div>
-          <div>公共藝術</div>
+      <!-- <div class="attraction-div">
+        <div class="attraction">
+          <img src="../static/images/Picture.png" alt="" class="attraction-img">
+          <div class="attraction-name">平安鐘</div>
+          <div class="attraction-info">
+            <div class="transportation">忠孝復興</div>
+            <div>公共藝術</div>
+          </div>
         </div>
-      </div>
-      -->
+      </div> -->
+    </div>
+    <div class="loading-area display-none">
+      <div class="loading-percentage">0 %</div>
+      <img src="../static/images/spinner.gif">
     </div>
   </main>
   {% endblock %}

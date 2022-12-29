@@ -2,6 +2,8 @@
 const initialPage = 0
 const initialKeyword = ""
 const attractionArea = document.querySelector(".attraction-area")
+const loadingArea = document.querySelector(".loading-area")
+const loadingPercentage = document.querySelector(".loading-percentage")
 let loadAmount = 0
 let nextPageArray = []
 let isLoading = false
@@ -27,7 +29,7 @@ async function initialLoad(page, keyword){
     if(nextPage){
       nextPageArray.push(nextPage)
     }
-    
+
     loadMoreAttractions(nextPage, keyword)
     isLoading = false
   } catch (error) {
@@ -64,7 +66,7 @@ async function fetchAttractionsByPageOrKeyword(page, keyword) {
     const response = await fetch(url)
     const jsonData = await response.json()
 
-    let nextPage = getAttractions(jsonData)[0]
+    const nextPage = getAttractions(jsonData)[0]
     if(nextPage){
       nextPageArray.push(nextPage)
     }
@@ -77,11 +79,17 @@ async function fetchAttractionsByPageOrKeyword(page, keyword) {
 
 // Get attractions
 function getAttractions(data){
+  let imgLoadingNumber = 0
   const nextPage = data.nextPage
   const dataLength = data.data.length
+
+  const attractionDiv = document.createElement("div")
+  attractionDiv.classList.add("attraction-div")
+  loadingArea.classList.remove("display-none")
+
   for (let i =0; i < data.data.length; i++){
     const attractionID = data.data[i].id
-    const imgURL = data.data[i].images[0]
+    const imgUrl = data.data[i].images[0]
     const name = data.data[i].name
     const mrt = data.data[i].mrt
     const category = data.data[i].category
@@ -89,12 +97,29 @@ function getAttractions(data){
     const attraction = document.createElement("a")
     attraction.setAttribute("href", `/attraction/${attractionID}`)
     attraction.classList.add("attraction")
-    attractionArea.appendChild(attraction)
+    
+    // ---------------- image preload -----------------
 
     const image = document.createElement("img")
-    image.src = imgURL
+    image.src = imgUrl
     image.classList.add("attraction-img")
+    image.onload = ()=> {
+      imgLoadingNumber++
+      if (imgLoadingNumber === data.data.length) {
+        loadingPercentage.textContent = "0 %"
+        attractionArea.appendChild(attractionDiv)
+        loadingArea.classList.add("display-none")
+        if (!nextPage) {
+          loadingArea.classList.add("display-none")
+        }
+      } else {
+        loadingPercentage.textContent = `
+        ${(Math.round((imgLoadingNumber / data.data.length) * 100 ))}%`
+      }
+    }
     attraction.appendChild(image)
+    
+    // ---------------- attraction box -----------------
 
     const attractionName = document.createElement("div")
     attractionName.classList.add("attraction-name")
@@ -114,6 +139,8 @@ function getAttractions(data){
     infoCategory.classList.add("info-category")
     infoCategory.textContent = category
     attractionInfo.appendChild(infoCategory)
+
+    attractionDiv.appendChild(attraction)
   }
   return [nextPage, dataLength]
 }
