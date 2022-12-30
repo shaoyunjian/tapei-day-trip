@@ -122,6 +122,15 @@ input[type="date"] {
   border: none;
   outline: none;
   padding: 5px 10px;
+  margin-left: 3px;
+  background: #ffffff;
+  color: #000000;
+}
+
+.date-picker {
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 .booking {

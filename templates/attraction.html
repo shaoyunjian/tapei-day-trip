@@ -1,81 +1,84 @@
 {% extends "index.html" %}
 
-  {% block style %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/attraction.css')}}">
-  {% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/attraction.css')}}">
+{% endblock %}
 
-  {% block title %}
-  <title></title>
-  {% endblock %}
+{% block title %}
+<title></title>
+{% endblock %}
 
-  {% block content %}
-  <main>
-    <div class="main-container">
-      
-      <!-- slide & booking-area -->
-      <div class="slide-and-booking-area">
+{% block content %}
+<main>
+  <div class="main-container">
 
-        <!-- slideshow -->
-        <div class="slideshow-container">
-          <div class="loading-area">
-            <div class="loading-percentage">0 %</div>
-            <div><img src="../static/images/spinner.gif" class="loading-spinner"></div>
-          </div>
-          <div class="slide-image-container">
-            <!-- <img src="../static/images/Picture.png" alt="attraction-images" class="slide-images"> -->
-          </div>
-          <div class="left-arrow"></div>
-          <div class="right-arrow"></div>
-          <div class="dots">
-            <!-- <span class="dot active"></span> -->
-          </div>
+    <!-- slide & booking-area -->
+    <div class="slide-and-booking-area">
+
+      <!-- slideshow -->
+      <div class="slideshow-container">
+        <div class="loading-area">
+          <div class="loading-percentage">0 %</div>
+          <div><img src="../static/images/spinner.gif" class="loading-spinner"></div>
         </div>
-
-        <!-- booking -area -->
-        <div class="booking-area">
-          <div class="attraction-name"></div>
-          <div class="category-mrt"></div>
-          <!-- booking -->
-          <form action="" class="booking">
-            <div><b>訂購導覽行程</b></div>
-            <div>以此景點為中心的一日行程，帶您探索城市角落故事</div>
-            <div><b>選擇日期： </b><input id="date-picker" type="date" value="yyyy-mm-dd"></div>
-            <div><b>選擇時間：</b>
-              <label class="radio-container">
-                <input type="radio" id="itinerary-morning" name="itinerary" value="morning" checked>
-                <span class="new-radio-btn"></span>
-                上半天
-              </label>
-              <label class="radio-container itinerary-afternoon">
-                <input type="radio" id="itinerary-afternoon" name="itinerary" value="afternoon">
-                <span class="new-radio-btn"></span>
-                下半天
-              </label>
-            </div>
-            <div><b>導覽費用：</b><span class="price">新台幣 2000 元</span></div>
-            <button id="start-booking-btn">開始預約行程</button>
-          </form>
+        <div class="slide-image-container">
+          <!-- <img src="../static/images/Picture.png" alt="attraction-images" class="slide-images"> -->
+        </div>
+        <div class="left-arrow"></div>
+        <div class="right-arrow"></div>
+        <div class="dots">
+          <!-- <span class="dot active"></span> -->
         </div>
       </div>
-      
-      <div class="attraction-intro-container">
-        <div class="attraction-intro">
-         <!-- attraction introduction display -->
-        </div>
-        <div class="address-info">
-          <div class="address-title"><b>景點地址：</b></div>
-          <div class="address-detail"></div>
-        </div>
-        <div class="transportation-info">
-          <div class="transportation-title"><b>交通方式：</b></div>
-          <div class="transportation-detail"></div>
-        </div>
-        <div class="map-container"></div>
+
+      <!-- booking -area -->
+      <div class="booking-area">
+        <div class="attraction-name"></div>
+        <div class="category-mrt"></div>
+        <!-- booking -->
+        <form action="" class="booking">
+          <div><b>訂購導覽行程</b></div>
+          <div>以此景點為中心的一日行程，帶您探索城市角落故事</div>
+          <div class="date-picker">
+            <b>選擇日期： </b>
+            <input id="date-picker" type="date" value="yyyy-mm-dd">
+          </div>
+          <div><b>選擇時間：</b>
+            <label class="radio-container">
+              <input type="radio" id="itinerary-morning" name="itinerary" value="morning" checked>
+              <span class="new-radio-btn"></span>
+              上半天
+            </label>
+            <label class="radio-container itinerary-afternoon">
+              <input type="radio" id="itinerary-afternoon" name="itinerary" value="afternoon">
+              <span class="new-radio-btn"></span>
+              下半天
+            </label>
+          </div>
+          <div><b>導覽費用：</b><span class="price">新台幣 2000 元</span></div>
+          <button id="start-booking-btn">開始預約行程</button>
+        </form>
       </div>
     </div>
-  </main>
-  {% endblock %}
 
-  {% block script %}
-  <script src="{{ url_for('static', filename='javascript/attraction.js')}}"></script>
-  {% endblock %}
+    <div class="attraction-intro-container">
+      <div class="attraction-intro">
+        <!-- attraction introduction display -->
+      </div>
+      <div class="address-info">
+        <div class="address-title"><b>景點地址：</b></div>
+        <div class="address-detail"></div>
+      </div>
+      <div class="transportation-info">
+        <div class="transportation-title"><b>交通方式：</b></div>
+        <div class="transportation-detail"></div>
+      </div>
+      <div class="map-container"></div>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='javascript/attraction.js')}}"></script>
+{% endblock %}
