@@ -7,21 +7,20 @@ const itineraryItem = document.querySelectorAll(".itinerary-item")
 const greeting = document.querySelector(".greeting")
 const greetingUsername = document.querySelector(".greeting-username")
 const totalAmount = document.querySelector(".total-amount")
+let isLoading
 
 
 // ------------ Check login status ------------
 
-document.addEventListener("DOMContentLoaded", ()=> {
+document.addEventListener("DOMContentLoaded", () => {
   loginStatus()
-  async function loginStatus(){
-    await checkLoginStatus() 
+  async function loginStatus() {
+    await checkLoginStatus()
     if (isLoggedIn) {
-      initialLoad()
-
-      window.addEventListener("load", ()=>{
+      await initialLoad()
+      if (!isLoading) {
         loader.classList.add("display-none")
-      })
-
+      }
     } else {
       greeting.style.display = "none"
       bookingContainer.style.display = "none"
@@ -36,31 +35,32 @@ showUsername()
 async function showUsername() {
   const response = await fetch("/api/user/auth", {
     method: "GET",
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   })
   const jsonData = await response.json()
-  if(jsonData.data !== null){
-    greetingUsername.textContent= jsonData.data.name
+  if (jsonData.data) {
+    greetingUsername.textContent = jsonData.data.name
   }
 }
 
 // ---------------- Initial load ---------------------
 let bookingArray = []
 let totalBookingPrice = ""
-async function initialLoad(){
-  const response = await fetch("/api/booking",{
+async function initialLoad() {
+  isLoading = true
+  const response = await fetch("/api/booking", {
     method: "GET",
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   })
 
   const jsonData = await response.json()
-  
-  if (!jsonData.data){
+
+  if (!jsonData.data) {
     noItinerary.style.display = "block"
     bookingContainer.style.display = "none"
   } else {
     let totalPrice = 0
-    jsonData.data.forEach((item)=>{
+    jsonData.data.forEach((item) => {
       loadItineraryItem(item)
       totalPrice += item.price
       bookingArray.push(item)
@@ -69,11 +69,12 @@ async function initialLoad(){
     totalBookingPrice = totalPrice
     deleteItineraryItem()
   }
+  isLoading = false
 }
 
 // ------------- Load itinerary -----------------
 
-function loadItineraryItem(data){
+function loadItineraryItem(data) {
   const time = (data.time === "morning") ? "早上 8 點至 12 點" : "下午 2 點至 6 點"
   itineraryItems.innerHTML += `
     <div class="itinerary-item">
@@ -97,28 +98,29 @@ function loadItineraryItem(data){
 
 // ------------------ Delete items--------------------
 
-function deleteItineraryItem(){
+function deleteItineraryItem() {
   const deleteBtns = document.querySelectorAll(".delete-icon")
-  for (let deleteBtn of deleteBtns){
-    deleteBtn.addEventListener("click", (event)=> {
+  for (let deleteBtn of deleteBtns) {
+    deleteBtn.addEventListener("click", (event) => {
       const bookingId = event.target.dataset.id
       checkLoginStatus()
-      
+
       fetchDeleteBookingAPI(bookingId)
-      async function fetchDeleteBookingAPI(id){
+      async function fetchDeleteBookingAPI(id) {
         const response = await fetch("/api/booking", {
           method: "DELETE",
-          headers: {"Content-Type": "application/json"},
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             booking_id: id
           })
         })
-        
+
         const jsonData = await response.json()
-        if(jsonData.ok){
+        if (jsonData.ok) {
           window.location = window.location.href
         }
-    }})
+      }
+    })
   }
 }
 
@@ -132,7 +134,7 @@ const inputEmailMessage = document.querySelector("#input-email-message")
 const inputPhoneMessage = document.querySelector("#input-phone-message")
 
 
-inputName.addEventListener("input", (event)=>{
+inputName.addEventListener("input", (event) => {
   const inputNameValue = inputName.value.trim()
   if (!inputNameValue) {
     inputNameMessage.textContent = "＊請不要空白"
@@ -143,7 +145,7 @@ inputName.addEventListener("input", (event)=>{
   }
 })
 
-inputEmail.addEventListener("input", (event)=>{
+inputEmail.addEventListener("input", (event) => {
   const inputEmailValue = inputEmail.value.trim()
   if (!inputEmailValue) {
     inputEmailMessage.textContent = "＊請不要空白"
@@ -154,7 +156,7 @@ inputEmail.addEventListener("input", (event)=>{
   }
 })
 
-inputPhone.addEventListener("input", (event)=>{
+inputPhone.addEventListener("input", (event) => {
   const inputPhoneValue = inputPhone.value.trim()
   if (!inputPhoneValue) {
     inputPhoneMessage.textContent = "＊請不要空白"
@@ -168,24 +170,24 @@ inputPhone.addEventListener("input", (event)=>{
 // -------------- TapPay area ----------------
 
 TPDirect.setupSDK(
-  126866, 
-  "app_TkD1So34n96TIzrFmQSqgcmLiwvsPGUo244E0FckQWCnfXRVJ8iLicFIbe1o", 
+  126866,
+  "app_TkD1So34n96TIzrFmQSqgcmLiwvsPGUo244E0FckQWCnfXRVJ8iLicFIbe1o",
   "sandbox")
 
 let fields = {
   number: {
-      // css selector
-      element: "#card-number",
-      placeholder: "**** **** **** ****"
+    // css selector
+    element: "#card-number",
+    placeholder: "**** **** **** ****"
   },
   expirationDate: {
-      // DOM object
-      element: document.getElementById("card-expiration-date"),
-      placeholder: "MM / YY"
+    // DOM object
+    element: document.getElementById("card-expiration-date"),
+    placeholder: "MM / YY"
   },
   ccv: {
-      element: "#card-ccv",
-      placeholder: "ccv"
+    element: "#card-ccv",
+    placeholder: "ccv"
   }
 }
 
@@ -194,27 +196,27 @@ TPDirect.card.setup({
   styles: {
     // Styling ccv field
     "input.ccv": {
-        "font-size": "16px"
+      "font-size": "16px"
     },
     // Styling expiration-date field
     "input.expiration-date": {
-        "font-size": "16px"
+      "font-size": "16px"
     },
     // Styling card-number field
     "input.card-number": {
-        "font-size": "16px"
+      "font-size": "16px"
     },
     // style focus state
     ":focus": {
-        "color": "black"
+      "color": "black"
     },
     // style valid state
     ".valid": {
-        "color": "green"
+      "color": "green"
     },
     // style invalid state
     ".invalid": {
-        "color": "red"
+      "color": "red"
     }
   },
   // after filling out the correct credit card number, the middle eight digits will be hidden
@@ -235,14 +237,14 @@ submitButton.addEventListener("click", () => {
   const inputEmailValue = inputEmail.value.trim()
   const inputPhoneValue = inputPhone.value.trim()
 
-  if (!inputNameValue || !inputEmailValue || !inputPhoneValue){
+  if (!inputNameValue || !inputEmailValue || !inputPhoneValue) {
     openMessageModal("請不要有空白", "好")
   }
 
   const tappayStatus = TPDirect.card.getTappayFieldsStatus()
   if (tappayStatus.status.number != 0 ||
     tappayStatus.status.expiry != 0 ||
-    tappayStatus.status.ccv != 0){
+    tappayStatus.status.ccv != 0) {
     openMessageModal("請填入正確的信用卡資訊", "好")
   }
 
@@ -250,12 +252,12 @@ submitButton.addEventListener("click", () => {
   TPDirect.card.getPrime((result) => {
     if (result.status === 0) {
       const cardPrime = result.card.prime
-      
+
       fetchCreateOrderAPI()
-      async function fetchCreateOrderAPI(){
+      async function fetchCreateOrderAPI() {
         const response = await fetch("/api/orders", {
           method: "POST",
-          headers: {"Content-Type": "application/json"},
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             prime: cardPrime,
             order: {
@@ -275,5 +277,5 @@ submitButton.addEventListener("click", () => {
       }
     }
   })
-  
+
 })
