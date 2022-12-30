@@ -17,7 +17,7 @@ const attractionImages = []
 // ----------- Fetch attraction id ------------
 
 fetchAttractionId()
-async function fetchAttractionId(){
+async function fetchAttractionId() {
   const response = await fetch(`/api/attraction/${attractionId}`)
   const jsonData = await response.json()
 
@@ -38,27 +38,25 @@ async function fetchAttractionId(){
   const images = data.images
   let imgLoadingNumber = 0
 
-  images.forEach((imgUrl)=>{
+  images.forEach((imgUrl) => {
     const image = document.createElement("img")
     image.src = imgUrl
     image.classList.add("slide-images")
     image.classList.add("display-none")
-    image.onload = ()=> {
+    image.onload = () => {
       imgLoadingNumber++
-      if(imgLoadingNumber === slideImages.length){
+      if (imgLoadingNumber === slideImages.length) {
         loadingArea.classList.add("display-none")
-        console.log("123")
       } else {
-        console.log(imgLoadingNumber)
-        loadingPercentage.textContent = `${(Math.round((imgLoadingNumber / slideImages.length) * 100 ))}%`
+        loadingPercentage.textContent = `${(Math.round((imgLoadingNumber / slideImages.length) * 100))}%`
       }
     }
     slideImageContainer.appendChild(image)
   })
-  
+
   const slideImages = document.querySelectorAll(".slide-images")
   slideImages[0].classList.remove("display-none")
-  
+
 
   // ------------------------------------------
 
@@ -71,11 +69,11 @@ async function fetchAttractionId(){
   mapContainer.innerHTML = `
     <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" style="border-radius: 5px" class="google-map" src=https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${lat},${lng}&z=16&output=embed&t=></iframe>`
 
-  
+
   // -------- Add dots and attraction images --------
 
-  for(let i = 0; i< imageNumber; i++){
-    dots.innerHTML +=`<span class="dot" data-id="${i}"></span>`
+  for (let i = 0; i < imageNumber; i++) {
+    dots.innerHTML += `<span class="dot" data-id="${i}"></span>`
   }
 
   // ---------------- Slideshow ----------------
@@ -90,55 +88,55 @@ async function fetchAttractionId(){
 
   // ------ Slideshow: left arrow ------ 
 
-  leftArrow.addEventListener("click", ()=>{ 
-    if(imageNumber === 1) return
+  leftArrow.addEventListener("click", () => {
+    if (imageNumber === 1) return
 
     slideImages[currentIndex].classList.add("display-none")
     currentIndex -= 1
-    if(currentIndex < 0){currentIndex = imageNumber - 1} 
+    if (currentIndex < 0) { currentIndex = imageNumber - 1 }
     slideImages[currentIndex].classList.remove("display-none")
 
     const activeItem = document.querySelector(".active")
-    if(activeItem){activeItem.classList.remove("active")}
+    if (activeItem) { activeItem.classList.remove("active") }
 
     classNameIsDot[currentIndex].className += " active"
-    if(currentIndex === imageNumber - 1 ){
+    if (currentIndex === imageNumber - 1) {
       classNameIsDot[0].className = classNameIsDot[0].className.replace(" active", "")
-    } else {classNameIsDot[currentIndex + 1].className = classNameIsDot[currentIndex + 1].className.replace(" active", "")}
+    } else { classNameIsDot[currentIndex + 1].className = classNameIsDot[currentIndex + 1].className.replace(" active", "") }
   })
 
 
   // ------ Slideshow: right arrow ------ 
-  
-  rightArrow.addEventListener("click", ()=>{
-    if(imageNumber === 1) return
+
+  rightArrow.addEventListener("click", () => {
+    if (imageNumber === 1) return
 
     slideImages[currentIndex].classList.add("display-none")
     currentIndex += 1
-    if(currentIndex + 1 > imageNumber) {currentIndex = 0} 
+    if (currentIndex + 1 > imageNumber) { currentIndex = 0 }
     slideImages[currentIndex].classList.remove("display-none")
 
     const activeItem = document.querySelector(".active")
-    if(activeItem) {activeItem.classList.remove("active")}
-    
+    if (activeItem) { activeItem.classList.remove("active") }
+
     classNameIsDot[currentIndex].className += " active"
-    if(!currentIndex){
+    if (!currentIndex) {
       classNameIsDot[imageNumber - 1].className = classNameIsDot[imageNumber - 1].className.replace(" active", "")
-    } else {classNameIsDot[currentIndex - 1].className = classNameIsDot[currentIndex - 1].className.replace(" active", "")}
+    } else { classNameIsDot[currentIndex - 1].className = classNameIsDot[currentIndex - 1].className.replace(" active", "") }
   })
 
-  
+
   // ------ Slideshow: dots ------ 
 
-  dots.addEventListener("click", (event)=>{
-    for(let i = 0; i < imageNumber; i++){
-      if(event.target.dataset.id === `${i}`){
+  dots.addEventListener("click", (event) => {
+    for (let i = 0; i < imageNumber; i++) {
+      if (event.target.dataset.id === `${i}`) {
         slideImages[currentIndex].classList.add("display-none")
         currentIndex = i
         slideImages[currentIndex].classList.remove("display-none")
 
         const activeItem = document.querySelector(".active")
-        if(activeItem){activeItem.classList.remove("active")}
+        if (activeItem) { activeItem.classList.remove("active") }
         classNameIsDot[i].className += " active"
       }
     }
@@ -151,10 +149,10 @@ const price = document.querySelector(".price")
 const booking = document.querySelector(".booking")
 
 booking.addEventListener("click", (event) => {
-  if(event.target.id === "itinerary-morning") {
+  if (event.target.id === "itinerary-morning") {
     price.textContent = `新台幣 2000 元`
-    
-  } else if(event.target.id === "itinerary-afternoon") 
+
+  } else if (event.target.id === "itinerary-afternoon")
     price.textContent = `新台幣 2500 元`
 })
 
@@ -168,17 +166,17 @@ startBookingBtn.addEventListener("click", (event) => {
   const itineraryDateValue = document.querySelector('input[type="date"]').value
   const itineraryTimeValue = document.querySelector('input[name="itinerary"]:checked').value
   const itineraryPriceValue = (itineraryTimeValue === "morning") ? "2000" : "2500"
-  
+
   checkLoginStatus()
-  if (!isLoggedIn){
+  if (!isLoggedIn) {
     openLoginModal()
   } else {
     fetchAddItinerary()
-    
-    async function fetchAddItinerary(){
+
+    async function fetchAddItinerary() {
       const response = await fetch("/api/booking", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           attractionId: attractionId,
           itineraryDate: itineraryDateValue,
@@ -189,9 +187,9 @@ startBookingBtn.addEventListener("click", (event) => {
 
       const jsonData = await response.json()
 
-      if (jsonData.ok){
+      if (jsonData.ok) {
         window.location = "/booking"
-      } else if (jsonData.message === "data already exists"){
+      } else if (jsonData.message === "data already exists") {
         const itineraryTime = (itineraryTimeValue === "morning") ? "上半天" : "下半天"
         let message = `
           <div>無法加入</div>
@@ -200,7 +198,7 @@ startBookingBtn.addEventListener("click", (event) => {
           </div>
         `
         openMessageModal(message, "重新預定", "")
-      } else if (jsonData.message === "input error"){
+      } else if (jsonData.message === "input error") {
         openMessageModal("注意：請選擇日期", "好", "")
       }
     }
