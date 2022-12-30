@@ -52,10 +52,16 @@ header {
   align-items: center;
 }
 
-.nav > a,
-.nav > div {
+.nav>a,
+.nav>div {
   margin: 10px;
   color: #666666;
+  cursor: pointer;
+}
+
+.booking-cart-btn {
+  height: 22px;
+  margin: 0 14px;
   cursor: pointer;
 }
 
@@ -111,7 +117,7 @@ header {
   height: 18px;
 }
 
-.modal-content-title{
+.modal-content-title {
   text-align: center;
   font-size: 24px;
   font-weight: 700;
@@ -217,7 +223,7 @@ header {
   display: none;
 }
 
-.status-description{
+.status-description {
   cursor: default;
   color: rgba(255, 0, 0, 0.8);
   text-align: center;
@@ -249,7 +255,7 @@ footer {
   margin: -10px 0 30px 0;
 }
 
-.loading-area > div {
+.loading-area>div {
   margin: 5px;
 }
 
@@ -306,7 +312,7 @@ footer {
     transform: rotate(359deg);
     background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
   }
-} 
+}
 
 @keyframes zoom {
   from {
