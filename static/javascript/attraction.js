@@ -186,11 +186,17 @@ startBookingBtn.addEventListener("click", (event) => {
       })
 
       const jsonData = await response.json()
-
+      const itineraryTime = (itineraryTimeValue === "morning") ? "上午" : "下午"
       if (jsonData.ok) {
-        window.location = "/booking"
+        let message = `
+          <div style="font-size: 20px; ">
+            ${itineraryDateValue} ${itineraryTime}<br>
+            已加入購物車
+          </div>
+          </div>
+        `
+        openMessageModal(message, "好")
       } else if (jsonData.message === "data already exists") {
-        const itineraryTime = (itineraryTimeValue === "morning") ? "上半天" : "下半天"
         let message = `
           <div>無法加入</div>
           <div style="font-size: 16px; margin-top: 10px;">
