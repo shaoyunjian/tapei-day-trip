@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/orderhistory.css')}}">
+{% endblock %}
+
+{% block title %}
+<title>歷史訂單 - 台北一日遊</title>
+{% endblock %}
+
+{% block content %}
+<main>
+  <div class="main-container">
+    <div class="order-history-title">您的歷史訂單如下：</div>
+    <div class="orders">
+      <!-- <div class="no-order-history">
+        尚未有訂購紀錄
+      </div> -->
+      <!-- <div class="order-container">
+        <div class="order-number"><b>訂單編號：</b>20221222130843</div>
+        <div class="order-total-amount"><b>總金額：</b>4500</div>
+        <div class="order-itinerary-container">
+          <div class="order-attraction-image">
+            <img src="../static/images/Picture.png" alt="">
+          </div>
+          <div class="order-info-details">
+            <div class="order-attraction-name"><b>大稻埕碼頭</b></div>
+            <div class="order-date"><b>日期：</b>2023-01-01</div>
+            <div class="order-time"><b>時間：</b>早上 8 點至 12 點</div>
+            <div class="order-price"><b>費用：</b>2000</div>
+            <div class="order-attraction-address"><b>地點：</b>臺北市 大同區環河北路一段</div>
+          </div>
+        </div>
+      
+        <div class="order-itinerary-container">
+          <div class="order-attraction-image">
+            <img src="../static/images/Picture.png" alt="">
+          </div>
+          <div class="order-info-details">
+            <div class="order-attraction-name">大稻埕碼頭</div>
+            <div class="order-date">日期：2023-01-01</div>
+            <div class="order-time">時間：早上 8 點至 12 點</div>
+            <div class="order-price">費用：2000</div>
+            <div class="order-attraction-address">地點：臺北市 大同區環河北路一段</div>
+          </div>
+        </div> -->
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='javascript/orderhistory.js')}}"></script>
+{% endblock %}

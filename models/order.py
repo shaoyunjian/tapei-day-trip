@@ -84,3 +84,13 @@ class Order:
     value = (order_number,)
     result = Database.fetch_all_data(sql, value)
     return result
+  
+  def get_order_history(email):
+    sql = """
+      SELECT `order_number` 
+      FROM `orders` 
+      WHERE `user_email` = %s;
+    """
+    value = (email, )
+    result = Database.fetch_all_data(sql, value)
+    return result

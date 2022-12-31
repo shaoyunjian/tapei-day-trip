@@ -138,10 +138,10 @@ def create_order():
     "message": "error"
     }, 500
 
-#---------------- get order number ---------------------
+#------- get order info by order number ------------
 
 @order.route("/api/order/<order_number>", methods=["GET"])
-def get_order_number(order_number):
+def get_order_info_by_number(order_number):
   try:
     encoded_jwt= request.cookies.get("token")
     if not encoded_jwt:
@@ -197,6 +197,45 @@ def get_order_number(order_number):
             "phone":  contact_phone
           },
           "status": 0
+        }
+      }, 200
+  except jwt.exceptions.InvalidTokenError:
+    return {
+    "error": True,
+    "message": "invalid token"
+    }, 401
+  except:
+    return {
+    "error": True,
+    "message": "error"
+    }, 500
+
+  #------------ get history_order_number -------------
+
+@order.route("/api/orderhistory", methods=["GET"])
+def get_order_history():
+  try:
+    encoded_jwt= request.cookies.get("token")
+    if not encoded_jwt:
+      return {
+        "error": True,
+        "message": "user not logged in"
+      }, 403
+    
+    decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
+    user_email = decoded_jwt["email"]
+
+    result = Order.get_order_history(user_email)
+    history_order_number = []
+    for data in result:
+      history_order_number.append(data[0])
+      
+    if not result:
+      return {"data": None}, 200
+    else: 
+      return {
+        "data": {
+          "historyOrderNumber": history_order_number
         }
       }, 200
   except jwt.exceptions.InvalidTokenError:
