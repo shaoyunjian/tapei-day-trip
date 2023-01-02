@@ -1,10 +1,6 @@
 from flask import *
-from models.mysql_connector import pool
-import os
-from dotenv import load_dotenv
-load_dotenv() 
-import jwt
-jwt_key =os.getenv("JWT_KEY")
+from models.booking import Booking
+from routes import jwt_key, jwt
 
 booking = Blueprint(
   "booking", 
@@ -18,33 +14,12 @@ booking = Blueprint(
 @booking.route("/api/booking", methods=["GET"])
 def check_itinerary():
   try:
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-
     encoded_jwt= request.cookies.get("token")
     decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
     if decoded_jwt: 
       user_email = decoded_jwt["email"]
+      booking_cart_data = Booking.query_booking_list_by_email(user_email)
 
-      sql = """
-        SELECT 
-          `user_booking_list`.`id`, 
-          `user_booking_list`.`attraction_id`, 
-          `attraction_info`.`name`, 
-          `attraction_info`.`address`, 
-          `user_booking_list`.`image`, 
-          `user_booking_list`.`date`, 
-          `user_booking_list`.`time`, 
-          `user_booking_list`.`price`
-        FROM `user_booking_list` 
-        INNER JOIN `attraction_info` 
-        ON `user_booking_list`.`attraction_id`=`attraction_info`.`id` 
-        WHERE `user_email` = %s;
-      """
-      value = (user_email,)
-      
-      cursor.execute(sql, value)
-      booking_cart_data = cursor.fetchall()
       if not booking_cart_data:
         return {"data": None}, 200
       else:
@@ -75,9 +50,7 @@ def check_itinerary():
     "error": True,
     "message": "invalid token"
     }, 401
-  finally:
-    cursor.close()
-    connection.close()
+
 
 
 #---------------- Add an itinerary ------------------
@@ -91,51 +64,33 @@ def add_itinerary():
   price = data["itineraryPrice"]
 
   try:
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-    sql = """ 
-      SELECT `url` 
-      FROM `image` 
-      WHERE `attraction_id` = %s 
-      GROUP BY `attraction_id`;
-    """
-    value = (attraction_id, )
-    cursor.execute(sql, value)
-    imageData = cursor.fetchone()
+    imageData = Booking.query_attraction_image(attraction_id)
     image = imageData[0]
 
     encoded_jwt= request.cookies.get("token")
     decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
     if decoded_jwt:
       user_email = decoded_jwt["email"]
-      sql = """
-        SELECT 
-          `date`, 
-          `time` 
-        FROM `user_booking_list` 
-        WHERE `user_email` = %s;
-        """
-      value = (user_email, )
-      cursor.execute(sql, value)
-      itineraryData = cursor.fetchall()
+    
+      itinerary_data = Booking.query_booking_datetime(user_email)
       
-      for dateTime in itineraryData:
-        if dateTime[0] == date and dateTime[1] == time:
+      for datetime in itinerary_data:
+        if datetime[0] == date and datetime[1] == time:
           return {
             "error": True,
             "message": "data already exists"
           }, 400
    
       if date and time and price:
-        sql = """
-        INSERT INTO 
-          `user_booking_list`(`user_email`, `attraction_id`, `image`, `date`, `time`, `price`) 
-        VALUES(%s, %s, %s, %s, %s, %s);
-        """
         value = (user_email, attraction_id, image, date, time, price)
-        cursor.execute(sql, value)
-        connection.commit()
-        return {"ok": True}, 200
+        result = Booking.insert_booking_info(value)
+        if result:
+          return {"ok": True}, 200
+        else:
+          return {
+            "error": True,
+            "message": "error"
+          }, 500
       else:
         return {
           "error": True,
@@ -153,13 +108,9 @@ def add_itinerary():
     }, 401
   except:
     return {
-    "error": True,
-    "message": "error"
+      "error": True,
+      "message": "error"
     }, 500
-  finally:
-    cursor.close()
-    connection.close()
-
 
 # ---------------- Delete an itinerary ------------------
 
@@ -169,30 +120,19 @@ def delete_itinerary():
   booking_id = data["booking_id"]
   
   try:
-    connection = pool.get_connection()
-    cursor = connection.cursor()
-
-    sql = """ 
-      SELECT user_email 
-      FROM `user_booking_list` 
-      WHERE `id` = %s;
-    """
-    value = (booking_id, )
-    cursor.execute(sql, value)
-    db_current_user_email = cursor.fetchone()
+    db_current_user_email = Booking.select_email_from_booking_list(booking_id)
 
     encoded_jwt= request.cookies.get("token")
     decoded_jwt = jwt.decode(encoded_jwt, jwt_key, algorithms="HS256")
 
     if decoded_jwt["email"] == db_current_user_email[0]:
-      sql = """
-        DELETE FROM `user_booking_list` 
-        WHERE `id` = %s;
-      """
-      value = (booking_id,)
-      cursor.execute(sql, value)
-      connection.commit()
-      return {"ok": True}, 200
+      result = Booking.delete_booking_list_by_id(booking_id)
+      if result:
+        return {"ok": True}, 200
+      else:
+        return {
+          "error": True, 
+          "message": "Server error"}, 500
     else:
       return {
         "error": True,

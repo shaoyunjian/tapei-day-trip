@@ -1,0 +1,33 @@
+/*!
+* @package twicon
+* @version 1.001
+* @author twicon https://twicon.page
+* @copyright Copyright (c) 2020 twicon
+* @license - https://twicon.page/license/
+*/
+@font-face {
+  font-family: twicon;
+  font-weight: 400;
+  font-style: Regular;
+  src: url(twicon.woff2) format("woff2"),
+    url(twicon.woff) format("woff");
+}
+[class*=" twicon-"],
+[class^="twicon-"] {
+  font-family: twicon !important;
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  line-height: 1;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+.twicon-tapioca:before {
+  content: "\a048";
+}

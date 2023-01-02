@@ -1,3 +1,4 @@
+/* main */
 .main-container {
   width: 1200px;
   height: auto;
@@ -20,6 +21,19 @@
   height: 406px;
   margin: 0 15px;
   position: relative;
+}
+
+.loading-area {
+  position: absolute;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(245, 245, 245);
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .slide-images {
@@ -108,6 +122,15 @@ input[type="date"] {
   border: none;
   outline: none;
   padding: 5px 10px;
+  margin-left: 3px;
+  background: #ffffff;
+  color: #000000;
+}
+
+.date-picker {
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 .booking {
@@ -209,7 +232,8 @@ input[type=radio] {
   }
 
   .main-container {
-    width: 100%;
+    width: 95%;
+    margin-top: 80px;
   }
 
   .slide-and-booking-area {
@@ -218,7 +242,7 @@ input[type=radio] {
 
   .slideshow-container {
     width: 45%;
-    margin: 0 15px;
+    margin: 0 10px;
   }
 
   .slide-images {
@@ -335,5 +359,12 @@ input[type=radio] {
     width: 100%;
     padding: 0 10px 0 20px;
   }
+  
+  .google-map {
+    padding-right: 10px;
+  }
+}
 
+.display-none {
+  display: none;
 }

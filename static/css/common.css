@@ -22,13 +22,14 @@ header {
   top: 0;
   background-color: #FFFFFF;
   border-bottom: 1px solid #E8E8E8;
-  z-index: 2;
+  z-index: 10;
 }
 
 /* navigation-bar */
 
 .navigation-bar {
   width: 1200px;
+  height: 54px;
   display: flex;
   margin: auto;
   padding: 10px;
@@ -52,10 +53,16 @@ header {
   align-items: center;
 }
 
-.nav > a,
-.nav > div {
+.nav>a,
+.nav>div {
   margin: 10px;
   color: #666666;
+  cursor: pointer;
+}
+
+.booking-cart-btn,
+.order-history-btn {
+  height: 22px;
   cursor: pointer;
 }
 
@@ -90,7 +97,7 @@ header {
   content: "";
   width: 340px;
   height: 10px;
-  background-image: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+  background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
   border-radius: 5px 5px 0 0;
   position: absolute;
   top: -10px;
@@ -111,7 +118,7 @@ header {
   height: 18px;
 }
 
-.modal-content-title{
+.modal-content-title {
   text-align: center;
   font-size: 24px;
   font-weight: 700;
@@ -217,17 +224,13 @@ header {
   display: none;
 }
 
-.status-description{
+.status-description {
   cursor: default;
   color: rgba(255, 0, 0, 0.8);
   text-align: center;
   font-size: 16px;
   font-weight: 400;
   margin: 5px auto;
-}
-
-.display-none {
-  display: none;
 }
 
 body {
@@ -245,4 +248,83 @@ footer {
   text-align: center;
   font-size: 16px;
   font-weight: 700;
+}
+
+/* spinner */
+.loading-area {
+  text-align: center;
+  margin: -10px 0 30px 0;
+}
+
+.loading-area>div {
+  margin: 5px;
+}
+
+.loading-percentage {
+  color: #337788;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ---------- Page loader ---------- */
+
+.loader {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(245, 245, 245);
+  z-index: 2;
+}
+
+.icon-circle {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  background-color: #448899;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 2px 2px rgb(245, 245, 245) inset;
+}
+
+.loader-icon {
+  color: #ffffff;
+  width: 70px;
+}
+
+.rotate {
+  animation: rotation 2s infinite;
+}
+
+.zoom {
+  animation: zoom 2s infinite;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+    background: linear-gradient(270deg, #66AABB 0%, #337788 100%);
+  }
+
+  to {
+    transform: rotate(359deg);
+    background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+  }
+}
+
+@keyframes zoom {
+  from {
+    width: 50px;
+  }
+
+  to {
+    width: 70px;
+  }
+}
+
+.display-none {
+  display: none;
 }

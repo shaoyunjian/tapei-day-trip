@@ -23,9 +23,9 @@ modalCloseBtn.forEach((value) => {
 })
 
 document.addEventListener("click", (event) => {
-  if(event.target === loginModal || 
+  if (event.target === loginModal ||
     event.target === registerModal ||
-    event.target === popupNotification){
+    event.target === popupNotification) {
     closeModal()
   }
 })
@@ -43,7 +43,7 @@ function openRegisterModal() {
   registerModal.style.display = "block"
 }
 
-function openMessageModal(message, btnMessage){
+function openMessageModal(message, btnMessage) {
   popupNotification.style.display = "block"
   modalMessage.innerHTML = message
   modalContentBtn.textContent = btnMessage
@@ -58,21 +58,32 @@ function closeModal() {
 
 // -------------- User data validation ------------
 
-function userDataValidation(name, email, password){
+function userDataValidation(name = null, email, password) {
   const name_regex = /^.{1,10}$/
   const email_regex = /[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}/
   const password_regex = /^[a-zA-Z0-9]{8,16}$/
-  
-  if (!name_regex.test(name)) {
-    return "invalid name"
-  } else if (!email_regex.test(email)) {
-    return "invalid email"
-  } else if (!password_regex.test(password)) {
-    return "invalid password"
+
+  if (name) {
+    if (!name_regex.test(name)) {
+      return "invalid name"
+    } else if (!email_regex.test(email)) {
+      return "invalid email"
+    } else if (!password_regex.test(password)) {
+      return "invalid password"
+    } else {
+      return "valid"
+    }
   } else {
-    return "valid"
+    if (!email_regex.test(email)) {
+      return "invalid email"
+    } else if (!password_regex.test(password)) {
+      return "invalid password"
+    } else {
+      return "valid"
+    }
   }
 }
+
 
 // ---------------  Register ---------------------- 
 
@@ -90,7 +101,7 @@ registerBtn.addEventListener("click", () => {
   const registerValidationResult = userDataValidation(inputRegisterNameValue, inputRegisterEmailValue, inputRegisterPasswordValue)
 
   // register validation
-  if (!inputRegisterNameValue || !inputRegisterEmailValue || !inputRegisterPasswordValue){
+  if (!inputRegisterNameValue || !inputRegisterEmailValue || !inputRegisterPasswordValue) {
     registerModalStatus.innerHTML = `
       <div class="status-description">請不要有空白</div>`
   } else if (registerValidationResult === "invalid name") {
@@ -109,26 +120,26 @@ registerBtn.addEventListener("click", () => {
   async function register() {
     const response = await fetch(url, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: inputRegisterNameValue,
         email: inputRegisterEmailValue,
         password: inputRegisterPasswordValue
       })
     })
-    
+
     const jsonData = await response.json()
 
-    if (jsonData.message === "email already exists"){
+    if (jsonData.message === "email already exists") {
       registerModalStatus.innerHTML = `
       <div class="status-description">電子信箱已註冊</div>`
-    } else if(jsonData.ok === true){
+    } else if (jsonData.ok === true) {
       registerModalStatus.innerHTML = `
       <div class="status-description">註冊成功</div>`
       registerModalFooter.innerHTML = "點此登入"
       inputRegisterName.value = ""
       inputRegisterEmail.value = ""
-      inputRegisterPassword.value= ""
+      inputRegisterPassword.value = ""
     } else {
       console.log("error")
     }
@@ -146,19 +157,26 @@ const loginModalStatus = document.querySelector("#login-modal-status")
 loginBtn.addEventListener("click", () => {
   const inputLoginEmailValue = inputLoginEmail.value
   const inputLoginPasswordValue = inputLoginPassword.value
+  const loginValidationResult = userDataValidation(null, inputLoginEmailValue, inputLoginPasswordValue)
 
   if (!inputLoginEmailValue || !inputLoginPasswordValue) {
     loginModalStatus.innerHTML = `
       <div class="status-description">請不要空白</div>`
+  } else if (loginValidationResult === "invalid email") {
+    loginModalStatus.innerHTML = `
+      <div class="status-description">電子郵件不符合格式</div>`
+  } else if (loginValidationResult === "invalid password") {
+    loginModalStatus.innerHTML = `
+      <div class="status-description">密碼請輸入8至16個字母或數字</div>`
   } else {
     login()
   }
-  
-  
+
+
   async function login() {
     const response = await fetch("/api/user/auth", {
       method: "PUT",
-      headers: {"Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: inputLoginEmailValue,
         password: inputLoginPasswordValue
@@ -167,19 +185,18 @@ loginBtn.addEventListener("click", () => {
 
     const jsonData = await response.json()
     if (jsonData.ok) {
-     window.location = window.location.href
+      window.location = window.location.href
     } else {
       loginModalStatus.innerHTML = `
       <div class="status-description">電子郵件或密碼輸入錯誤</div>`
     }
   }
-  inputLoginPassword.value= ""
 })
 
 
 // ----------- Load and check login status---------
 
-const navLoginLogoutBtn = document.querySelector(".nav-login-logout-btn")
+const orderHistoryBtn = document.querySelector(".order-history-btn")
 let isLoggedIn = false
 let userEmail = ""
 
@@ -188,16 +205,18 @@ window.addEventListener("DOMContentLoaded", checkLoginStatus)
 async function checkLoginStatus() {
   const response = await fetch("/api/user/auth", {
     method: "GET",
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" }
   })
   const jsonData = await response.json()
 
-  if(jsonData.data){
-    navLoginRegisterBtn.style.display="none"
-    logoutBtn.style.display="block"
+  if (jsonData.data) {
+    navLoginRegisterBtn.style.display = "none"
+    logoutBtn.style.display = "block"
+    orderHistoryBtn.classList.remove("display-none")
     isLoggedIn = true
     userEmail = jsonData.data.email
   } else {
+    orderHistoryBtn.parentElement.classList.add("display-none")
     isLoggedIn = false
   }
 }
@@ -211,10 +230,10 @@ logoutBtn.addEventListener("click", (event) => {
   const url = "/api/user/auth"
 
   logout()
-  async function logout(){
+  async function logout() {
     const response = await fetch(url, {
       method: "DELETE",
-      headers: {"Content-Type": "application/json"}
+      headers: { "Content-Type": "application/json" }
     })
     const jsonData = await response.json()
     window.location = window.location.href
@@ -222,12 +241,14 @@ logoutBtn.addEventListener("click", (event) => {
 })
 
 // ---------------- Itinerary booking--------------
+
 const bookingCartBtn = document.querySelector(".booking-cart-btn")
 
-bookingCartBtn.addEventListener("click", () => {
+bookingCartBtn.addEventListener("click", (event) => {
+  event.preventDefault()
   checkLoginStatus()
-  if (isLoggedIn){
-      window.location = "/booking"
+  if (isLoggedIn) {
+    window.location = "/booking"
   } else {
     openLoginModal()
   }

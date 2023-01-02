@@ -1,9 +1,9 @@
 from flask import *
-from api.attraction import attraction
-from api.category import category
-from api.user import user
-from api.booking import booking
-from api.order import order
+from routes.attraction_route import attraction
+from routes.category_route import category
+from routes.user_route import user
+from routes.booking_route import booking
+from routes.order_route import order
 app=Flask(__name__)
 
 app.register_blueprint(attraction)
@@ -34,6 +34,10 @@ def booking():
 def thankyou():
 	return render_template("thankyou.html")
 
+@app.route("/orderhistory")
+def orderhistory():
+	return render_template("orderhistory.html")
+	
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port=3000)
