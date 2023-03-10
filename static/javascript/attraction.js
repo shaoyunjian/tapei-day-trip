@@ -193,7 +193,6 @@ startBookingBtn.addEventListener("click", (event) => {
             ${itineraryDateValue} ${itineraryTime}<br>
             已加入購物車
           </div>
-          </div>
         `
         openMessageModal(message, "好")
       } else if (jsonData.message === "data already exists") {
