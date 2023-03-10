@@ -62,6 +62,7 @@ header {
 
 .booking-cart-btn,
 .order-history-btn {
+  width: 22px;
   height: 22px;
   cursor: pointer;
 }
