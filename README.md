@@ -2,7 +2,9 @@
 
 ✨Taipei Day Trip is a tourism e-commerce website that allows users to search Taipei attractions and book itineraries.
 
-🔗 Website URL: http://3.211.21.229:3000/
+🔗 Website URL: ~~http://3.211.21.229:3000/~~
+( ⚠️ This project is currently not maintained, and the URL is not available at this time )
+
 
 👤 Test Account and Password:
 | Account | Password |
